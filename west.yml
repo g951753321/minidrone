@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: Apache-2.0
+
+manifest:
+  self:
+    west-commands: scripts/west-commands.yml
+
+  remotes:
+    - name: zephyrproject-rtos
+      url-base: https://github.com/zephyrproject-rtos
+
+  projects:
+    - name: zephyr
+      remote: zephyrproject-rtos
+      revision: main
+      import:
+        name-allowlist:
+          - cmsis      # required by the ARM port
+          - hal_stm32  # required by the nucleo_f302r8 board (STM32 based)
+          - cmsis-dsp  # required by the PID controller
