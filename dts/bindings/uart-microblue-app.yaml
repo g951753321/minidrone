@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: Apache-2.0
+
+description: UART Microblue application node
+
+compatible: "uart-microblue-app"
+
+properties:
+  uart:
+    type: phandle
+    description: UART device used by the application
+    required: true
+
+  left-stick-id:
+    type: string
+    default: "d0"
+    description: |
+      ID of the left stick. This ID is used to identify the left stick
+      in the application.
+
+  right-stick-id:
+    type: string
+    default: "d1"
+    description: |
+      ID of the right stick. This ID is used to identify the right stick
+      in the application.

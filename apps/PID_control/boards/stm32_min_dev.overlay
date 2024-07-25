@@ -1,0 +1,67 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+ / {
+    motors: motors {
+        compatible = "pwm-motors";
+        frontL: frontL {
+            pwms = <&t3_pwm1 1 0 PWM_POLARITY_NORMAL>;
+        };
+        frontR: frontR {
+            pwms = <&t3_pwm2 2 0 PWM_POLARITY_NORMAL>;
+        };
+        backL: backL {
+            pwms = <&t3_pwm3 3 0 PWM_POLARITY_NORMAL>;
+        };
+        backR: backR {
+            pwms = <&t3_pwm4 4 0 PWM_POLARITY_NORMAL>;
+        };
+    };
+
+    joystick {
+        compatible = "uart-microblue-app";
+        uart = <&usart3>;
+    };
+ };
+
+
+&usart3 {
+    current-speed = <38400>;
+};
+
+&timers3 {
+    status = "okay";
+
+    t3_pwm1: t3_pwm1 {
+        compatible = "st,stm32-pwm";
+        status = "okay";
+        #pwm-cells = <3>;
+        pinctrl-0 = <&tim3_ch1_pwm_out_pa6>;
+        pinctrl-names = "default";
+    };
+
+    t3_pwm2: t3_pwm2 {
+        compatible = "st,stm32-pwm";
+        status = "okay";
+        #pwm-cells = <3>;
+        pinctrl-0 = <&tim3_ch2_pwm_out_pa7>;
+        pinctrl-names = "default";
+    };
+
+    t3_pwm3: t3_pwm3 {
+        compatible = "st,stm32-pwm";
+        status = "okay";
+        #pwm-cells = <3>;
+        pinctrl-0 = <&tim3_ch3_pwm_out_pb0>;
+        pinctrl-names = "default";
+    };
+
+    t3_pwm4: t3_pwm4 {
+        compatible = "st,stm32-pwm";
+        status = "okay";
+        #pwm-cells = <3>;
+        pinctrl-0 = <&tim3_ch4_pwm_out_pb1>;
+        pinctrl-names = "default";
+    };
+};

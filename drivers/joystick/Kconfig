@@ -1,0 +1,24 @@
+# Joystick driver configuration options
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig JOYSTICK
+  bool "Joystick drivers"
+  help
+    Enable options for joystick drivers.
+
+if JOYSTICK
+
+module = JOYSTICK
+module-str = joystick
+source "subsys/logging/Kconfig.template.log_config"
+
+
+config JOYSTICK_MICROBLUE
+  bool "MicroBlue"
+  select SERIAL
+  select UART_INTERRUPT_DRIVEN
+  help
+    Enable MicroBlue joystick driver.
+
+
+endif
