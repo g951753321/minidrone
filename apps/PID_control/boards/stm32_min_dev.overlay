@@ -5,17 +5,17 @@
  / {
     motors: motors {
         compatible = "pwm-motors";
-        frontL: frontL {
-            pwms = <&t3_pwm1 1 0 PWM_POLARITY_NORMAL>;
+        backL: backL {
+            pwms = <&pwm1 1 0 PWM_POLARITY_NORMAL>;
         };
         frontR: frontR {
-            pwms = <&t3_pwm2 2 0 PWM_POLARITY_NORMAL>;
+            pwms = <&pwm2 2 0 PWM_POLARITY_NORMAL>;
         };
-        backL: backL {
-            pwms = <&t3_pwm3 3 0 PWM_POLARITY_NORMAL>;
+        frontL: frontL {
+            pwms = <&pwm3 3 0 PWM_POLARITY_NORMAL>;
         };
         backR: backR {
-            pwms = <&t3_pwm4 4 0 PWM_POLARITY_NORMAL>;
+            pwms = <&pwm4 4 0 PWM_POLARITY_NORMAL>;
         };
     };
 
@@ -30,10 +30,13 @@
     current-speed = <38400>;
 };
 
+// The original pwm1 define in the timers1 node is not needed.
+/delete-node/ &pwm1;
+
 &timers3 {
     status = "okay";
 
-    t3_pwm1: t3_pwm1 {
+    pwm1: pwm1 {
         compatible = "st,stm32-pwm";
         status = "okay";
         #pwm-cells = <3>;
@@ -41,7 +44,7 @@
         pinctrl-names = "default";
     };
 
-    t3_pwm2: t3_pwm2 {
+    pwm2: pwm2 {
         compatible = "st,stm32-pwm";
         status = "okay";
         #pwm-cells = <3>;
@@ -49,7 +52,7 @@
         pinctrl-names = "default";
     };
 
-    t3_pwm3: t3_pwm3 {
+    pwm3: pwm3 {
         compatible = "st,stm32-pwm";
         status = "okay";
         #pwm-cells = <3>;
@@ -57,7 +60,7 @@
         pinctrl-names = "default";
     };
 
-    t3_pwm4: t3_pwm4 {
+    pwm4: pwm4 {
         compatible = "st,stm32-pwm";
         status = "okay";
         #pwm-cells = <3>;
