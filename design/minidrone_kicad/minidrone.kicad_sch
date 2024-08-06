@@ -4723,6 +4723,17 @@
 		)
 		(uuid "019f061a-70a0-4736-b82d-0f2fb4ce22f8")
 	)
+	(label "FR_PWM"
+		(at 90.17 99.06 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1253e911-a9dc-416a-af81-7ed5e93df8de")
+	)
 	(label "PRG_RTS"
 		(at 27.94 35.56 0)
 		(fields_autoplaced yes)
@@ -4744,28 +4755,6 @@
 			(justify left bottom)
 		)
 		(uuid "1cbe5d46-66cf-42c3-8394-c7c8bae15925")
-	)
-	(label "BR_PWM"
-		(at 90.17 91.44 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "1cd1c88c-858f-4f8a-a3e4-78a32fd1a61f")
-	)
-	(label "FL_PWM"
-		(at 140.97 99.06 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "1d3a9354-15c6-41fa-a62e-4ab8473084ae")
 	)
 	(label "PRG_RX"
 		(at 41.91 96.52 0)
@@ -4789,17 +4778,6 @@
 		)
 		(uuid "224a1360-c8ff-4beb-8bc7-d5699020cdff")
 	)
-	(label "BL_PWM"
-		(at 140.97 142.24 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "29b8ef9e-015a-4644-9539-2c8967c41b8c")
-	)
 	(label "STAT_3"
 		(at 90.17 106.68 0)
 		(fields_autoplaced yes)
@@ -4810,6 +4788,17 @@
 			(justify left bottom)
 		)
 		(uuid "2c6139dc-e17d-4274-b7fa-0acbebee0274")
+	)
+	(label "PRG_TX"
+		(at 27.94 30.48 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "33002ce6-09a9-4588-b8b0-999b498bb46a")
 	)
 	(label "MPU_SCL"
 		(at 40.64 116.84 0)
@@ -4833,8 +4822,8 @@
 		)
 		(uuid "3ed47044-e3b6-4918-a4fa-0efceac09535")
 	)
-	(label "FR_PWM"
-		(at 90.17 96.52 0)
+	(label "BR_PWM"
+		(at 140.97 99.06 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4842,7 +4831,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "456e986b-cdbc-47ac-a0b8-8ea68b3c9418")
+		(uuid "43416234-a36f-4529-98a4-c531e6ec1f90")
 	)
 	(label "STAT_1"
 		(at 246.38 22.86 0)
@@ -4854,6 +4843,17 @@
 			(justify left bottom)
 		)
 		(uuid "56184482-f1e1-4f08-bc8b-4c37ad318a90")
+	)
+	(label "BR_PWM"
+		(at 90.17 93.98 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "58b02eff-dfcd-4e58-9988-d54187fa61f5")
 	)
 	(label "STAT_0"
 		(at 237.49 22.86 0)
@@ -4876,17 +4876,6 @@
 			(justify left bottom)
 		)
 		(uuid "739cb907-ccd2-4718-b6d7-0ff60478ae18")
-	)
-	(label "FL_PWM"
-		(at 90.17 93.98 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "7c332fa4-a74c-4075-a1df-9932d16b635f")
 	)
 	(label "BT_TX"
 		(at 90.17 86.36 0)
@@ -4921,6 +4910,28 @@
 		)
 		(uuid "94a1d078-e70f-44d0-8e10-ea0327ff077a")
 	)
+	(label "PRG_RX"
+		(at 27.94 27.94 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "99de8cbe-7136-4a75-9efe-7dedb358f309")
+	)
+	(label "FL_PWM"
+		(at 90.17 91.44 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "a0543bef-9dc6-4368-866b-72e0c0834e20")
+	)
 	(label "VBAT"
 		(at 161.29 33.02 0)
 		(fields_autoplaced yes)
@@ -4932,8 +4943,8 @@
 		)
 		(uuid "a19a4ed3-c8fd-401a-8704-3c94c37aea2d")
 	)
-	(label "PRG_RX"
-		(at 27.94 30.48 0)
+	(label "BL_PWM"
+		(at 184.15 99.06 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -4941,7 +4952,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "a8b4e73e-1a79-4ab1-bf4b-79c74e796dcc")
+		(uuid "a43247e4-c375-4efb-b914-0970996b632a")
 	)
 	(label "PRG_RTS"
 		(at 21.59 45.72 0)
@@ -4953,6 +4964,17 @@
 			(justify left bottom)
 		)
 		(uuid "ac7ffc7a-78d3-464f-8783-88075ada8c18")
+	)
+	(label "BL_PWM"
+		(at 90.17 96.52 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "ada2a822-6360-44b9-8eec-66afa46539fa")
 	)
 	(label "MPU_SCL"
 		(at 187.96 36.83 0)
@@ -4976,17 +4998,6 @@
 		)
 		(uuid "b86cc5df-6b1d-4393-a77a-e3365915134a")
 	)
-	(label "BL_PWM"
-		(at 90.17 99.06 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "bdebf555-a74d-4864-9490-edfb490cb6dc")
-	)
 	(label "BT_RX"
 		(at 90.17 88.9 0)
 		(fields_autoplaced yes)
@@ -4997,6 +5008,17 @@
 			(justify left bottom)
 		)
 		(uuid "c709b42a-018b-4a63-9313-701813b6b1f5")
+	)
+	(label "FR_PWM"
+		(at 140.97 142.24 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "d2ced66b-a261-4f8d-8267-86ed2424cadc")
 	)
 	(label "PRG_TX"
 		(at 41.91 99.06 0)
@@ -5020,8 +5042,8 @@
 		)
 		(uuid "d7ffe597-abe7-476d-8775-13f1124cd013")
 	)
-	(label "PRG_TX"
-		(at 27.94 27.94 0)
+	(label "FL_PWM"
+		(at 184.15 142.24 0)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -5029,18 +5051,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "e104b1db-9105-4c15-a241-490dc1edf67f")
-	)
-	(label "FR_PWM"
-		(at 184.15 99.06 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "eb323684-4388-44d0-a1f8-a86fe0c0718a")
+		(uuid "d8b502b4-7827-4963-9f26-ed1255ea64b3")
 	)
 	(label "BT_TX"
 		(at 74.93 29.21 0)
@@ -5052,17 +5063,6 @@
 			(justify left bottom)
 		)
 		(uuid "ee3677d1-2c32-412e-b205-9a775540ce33")
-	)
-	(label "BR_PWM"
-		(at 184.15 142.24 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "fc36e857-ab0c-48b0-b06d-8f524a080692")
 	)
 	(label "STAT_0"
 		(at 90.17 114.3 0)
