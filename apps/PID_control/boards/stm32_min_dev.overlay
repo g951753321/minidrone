@@ -19,12 +19,25 @@
         };
     };
 
+    status-leds {
+        compatible = "pwm-leds";
+        reds: reds {
+            pwms =  <&pwm5 1 0 PWM_POLARITY_NORMAL>,
+                    <&pwm6 2 0 PWM_POLARITY_NORMAL>,
+                    <&pwm7 3 0 PWM_POLARITY_NORMAL>,
+                    <&pwm8 4 0 PWM_POLARITY_NORMAL>;
+        };
+    };
+
     joystick {
         compatible = "uart-microblue-app";
         uart = <&usart3>;
     };
- };
+};
 
+&usart2 {
+    status = "disabled";
+};
 
 &usart3 {
     current-speed = <38400>;
@@ -65,6 +78,42 @@
         status = "okay";
         #pwm-cells = <3>;
         pinctrl-0 = <&tim3_ch4_pwm_out_pb1>;
+        pinctrl-names = "default";
+    };
+};
+
+&timers2 {
+    status = "okay";
+
+    pwm5: pwm5 {
+        compatible = "st,stm32-pwm";
+        status = "okay";
+        #pwm-cells = <3>;
+        pinctrl-0 = <&tim2_ch1_pwm_out_pa0>;
+        pinctrl-names = "default";
+    };
+
+    pwm6: pwm6 {
+        compatible = "st,stm32-pwm";
+        status = "okay";
+        #pwm-cells = <3>;
+        pinctrl-0 = <&tim2_ch2_pwm_out_pa1>;
+        pinctrl-names = "default";
+    };
+
+    pwm7: pwm7 {
+        compatible = "st,stm32-pwm";
+        status = "okay";
+        #pwm-cells = <3>;
+        pinctrl-0 = <&tim2_ch3_pwm_out_pa2>;
+        pinctrl-names = "default";
+    };
+
+    pwm8: pwm8 {
+        compatible = "st,stm32-pwm";
+        status = "okay";
+        #pwm-cells = <3>;
+        pinctrl-0 = <&tim2_ch4_pwm_out_pa3>;
         pinctrl-names = "default";
     };
 };
