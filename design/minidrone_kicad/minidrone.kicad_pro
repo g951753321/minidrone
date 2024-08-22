@@ -37,9 +37,9 @@
         "other_text_thickness": 0.15,
         "other_text_upright": false,
         "pads": {
-          "drill": 0.762,
-          "height": 1.524,
-          "width": 1.524
+          "drill": 3.2,
+          "height": 5.7,
+          "width": 5.7
         },
         "silk_line_width": 0.1,
         "silk_text_italic": false,
@@ -68,7 +68,26 @@
           "width": 0.508
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "connection_width|129045000|102559242|92334463-ca6b-4ecd-b98d-34b3fd37f076|9220728a-a387-4d91-a44d-5274ec151b80",
+        "connection_width|129045000|105099242|92334463-ca6b-4ecd-b98d-34b3fd37f076|9220728a-a387-4d91-a44d-5274ec151b80",
+        "connection_width|129045000|107639242|92334463-ca6b-4ecd-b98d-34b3fd37f076|9220728a-a387-4d91-a44d-5274ec151b80",
+        "connection_width|136267572|78426096|9220728a-a387-4d91-a44d-5274ec151b80|00000000-0000-0000-0000-000000000000",
+        "connection_width|141745000|122879242|4f481ec1-d604-4f3e-9f0d-d6d58409e37b|9220728a-a387-4d91-a44d-5274ec151b80",
+        "connection_width|143015000|122840761|4f481ec1-d604-4f3e-9f0d-d6d58409e37b|9220728a-a387-4d91-a44d-5274ec151b80",
+        "courtyards_overlap|144179999|101450038|819603c4-8df5-4dd5-b25f-6f93cb92df7b|685857a6-4383-4900-b7ac-ec8cd2ea38ff",
+        "courtyards_overlap|155820001|98546972|c1470700-dbaf-4f56-a7c1-dd01dadf88b7|819603c4-8df5-4dd5-b25f-6f93cb92df7b",
+        "lib_footprint_mismatch|127630000|125310000|49aa2794-fc09-4353-a5a5-6bb22d733251|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|127630000|81258600|f505cca5-632c-4566-a9b1-56b4cb657590|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|136840000|74980000|85dfff09-b672-4dc4-9017-ea019eb9cc53|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|172370000|125320000|e9a6bc16-e64b-4314-9034-e0d4b794ffbf|00000000-0000-0000-0000-000000000000",
+        "lib_footprint_mismatch|172370000|81268600|90a5fc3a-4e41-4ad4-b164-e864f8b9287b|00000000-0000-0000-0000-000000000000",
+        "starved_thermal|138371822|116510000|9220728a-a387-4d91-a44d-5274ec151b80|05d820fb-3e4f-448c-9396-535ed14e6a7c|F.Cu",
+        "starved_thermal|153820000|75463600|9220728a-a387-4d91-a44d-5274ec151b80|1d935b25-f2d3-45c9-8f72-7bd13785acf5|F.Cu",
+        "starved_thermal|160967969|77192030|9220728a-a387-4d91-a44d-5274ec151b80|248aa75b-700f-42c4-b375-b4419db94d57|F.Cu",
+        "starved_thermal|164140509|105070000|9220728a-a387-4d91-a44d-5274ec151b80|7783355f-1bcb-4503-a26e-aab0a837482a|F.Cu",
+        "starved_thermal|170320000|96190000|9220728a-a387-4d91-a44d-5274ec151b80|2a437ee0-52bd-473e-a563-e26cea8d9bc1|B.Cu"
+      ],
       "meta": {
         "version": 2
       },
@@ -139,8 +158,8 @@
         "min_text_thickness": 0.08,
         "min_through_hole_diameter": 0.3,
         "min_track_width": 0.254,
-        "min_via_annular_width": 0.1,
-        "min_via_diameter": 0.5,
+        "min_via_annular_width": 0.05,
+        "min_via_diameter": 0.4,
         "solder_mask_to_copper_clearance": 0.0,
         "use_height_for_length_calcs": true
       },
@@ -190,7 +209,10 @@
       "track_widths": [
         0.0,
         0.254,
-        0.508
+        0.508,
+        1.27,
+        2.0,
+        2.54
       ],
       "tuning_pattern_settings": {
         "diff_pair_defaults": {
@@ -222,6 +244,18 @@
         {
           "diameter": 0.0,
           "drill": 0.0
+        },
+        {
+          "diameter": 0.4,
+          "drill": 0.3
+        },
+        {
+          "diameter": 0.6,
+          "drill": 0.3
+        },
+        {
+          "diameter": 1.0,
+          "drill": 0.6
         }
       ],
       "zones_allow_external_fillets": false
@@ -491,7 +525,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "minidrone_gbr/",
       "pos_files": "",
       "specctra_dsn": "",
       "step": "",
@@ -636,7 +670,7 @@
       "intersheets_ref_own_page": false,
       "intersheets_ref_prefix": "",
       "intersheets_ref_short": false,
-      "intersheets_ref_show": false,
+      "intersheets_ref_show": true,
       "intersheets_ref_suffix": "",
       "junction_size_choice": 3,
       "label_size_ratio": 0.375,
@@ -669,6 +703,10 @@
     [
       "0f76a7c9-4725-4adc-99d0-a76a79219a7a",
       "根目錄"
+    ],
+    [
+      "0477ccb9-aa8c-456d-85e5-65d72e0e7aa8",
+      "stm32_dev"
     ]
   ],
   "text_variables": {}

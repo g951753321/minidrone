@@ -1,6 +1,6 @@
 # Minidrone project
 
-This project is a complex project that involves the firmware development, the schematic, PCB design, and 3D modeling for a mini drone.
+This project is a complex project that involves the firmware development, the schematic, and PCB design for a mini drone.
 
 ## Firmware development
 
@@ -34,7 +34,3 @@ The output files are located in the `build/zephyr` directory.
 ## Schematic and PCB design
 
 The schematic/PCB design is done using KiCad. The schematic includes the design of the motor drivers, the microcontroller, and the sensors.
-
-## 3D modeling
-
-The 3D modeling is done using FreeCAD. The 3D model includes the drone's frame, and the battery holder.
