@@ -2924,6 +2924,10 @@
 		(uuid "0f937f19-b8ea-486b-badc-f32f3db4d727")
 	)
 	(no_connect
+		(at 142.24 36.83)
+		(uuid "3c8cfa9c-6918-4d58-a325-8d798e712e50")
+	)
+	(no_connect
 		(at 83.82 128.27)
 		(uuid "46a36847-4ce8-4a18-b0d1-128b34099b24")
 	)
@@ -2938,10 +2942,6 @@
 	(no_connect
 		(at 55.88 110.49)
 		(uuid "6ae3393b-ceef-4bc2-9941-b0c4b70f40ba")
-	)
-	(no_connect
-		(at 142.24 31.75)
-		(uuid "76d35454-f40a-4539-a888-f743c44f5aa1")
 	)
 	(no_connect
 		(at 83.82 130.81)
@@ -3223,6 +3223,16 @@
 	)
 	(wire
 		(pts
+			(xy 144.78 31.75) (xy 142.24 31.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2c3b79e5-4fd3-49fa-a1b9-4a70b7c93f89")
+	)
+	(wire
+		(pts
 			(xy 157.48 33.02) (xy 157.48 35.56)
 		)
 		(stroke
@@ -3240,16 +3250,6 @@
 			(type default)
 		)
 		(uuid "2cdfa834-dd6c-4333-8fe7-f4fa42ffadad")
-	)
-	(wire
-		(pts
-			(xy 144.78 36.83) (xy 142.24 36.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3072a271-21df-458e-a380-63c31b509793")
 	)
 	(wire
 		(pts
@@ -3460,6 +3460,16 @@
 			(type default)
 		)
 		(uuid "62957799-b2ea-48d4-867a-f40e56c16ba1")
+	)
+	(wire
+		(pts
+			(xy 144.78 29.21) (xy 144.78 31.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "65c736b3-ac16-4b41-9e2c-da6f379e89f7")
 	)
 	(wire
 		(pts
@@ -3933,16 +3943,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 29.21) (xy 144.78 36.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e4f6d6a4-f2b8-494e-b73e-e928d5223efa")
-	)
-	(wire
-		(pts
 			(xy 205.74 106.68) (xy 195.58 106.68)
 		)
 		(stroke
@@ -4023,7 +4023,6 @@
 	)
 	(label "MPU_SDA"
 		(at 198.12 39.37 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4034,7 +4033,6 @@
 	)
 	(label "STAT_2"
 		(at 255.27 22.86 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4045,7 +4043,6 @@
 	)
 	(label "STAT_2"
 		(at 83.82 118.11 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4056,7 +4053,6 @@
 	)
 	(label "BT_RX"
 		(at 83.82 97.79 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4067,7 +4063,6 @@
 	)
 	(label "PRG_RTS"
 		(at 27.94 35.56 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4078,7 +4073,6 @@
 	)
 	(label "BR_PWM"
 		(at 241.3 83.82 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4089,7 +4083,6 @@
 	)
 	(label "MPU_SDA"
 		(at 46.99 125.73 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4100,7 +4093,6 @@
 	)
 	(label "STAT_3"
 		(at 83.82 115.57 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4111,7 +4103,6 @@
 	)
 	(label "PRG_RTS"
 		(at 66.04 143.51 90)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4122,7 +4113,6 @@
 	)
 	(label "PRG_TX"
 		(at 27.94 30.48 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4133,7 +4123,6 @@
 	)
 	(label "BR_PWM"
 		(at 140.97 99.06 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4144,7 +4133,6 @@
 	)
 	(label "BL_PWM"
 		(at 241.3 86.36 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4155,7 +4143,6 @@
 	)
 	(label "VBAT_a"
 		(at 83.82 110.49 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4166,7 +4153,6 @@
 	)
 	(label "STAT_1"
 		(at 246.38 22.86 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4177,7 +4163,6 @@
 	)
 	(label "STAT_0"
 		(at 237.49 22.86 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4188,7 +4173,6 @@
 	)
 	(label "PRG_TX"
 		(at 48.26 105.41 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4199,7 +4183,6 @@
 	)
 	(label "BT_RX"
 		(at 74.93 31.75 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4210,7 +4193,6 @@
 	)
 	(label "PRG_RX"
 		(at 27.94 27.94 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4221,7 +4203,6 @@
 	)
 	(label "VBAT_a"
 		(at 177.8 33.02 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4232,7 +4213,6 @@
 	)
 	(label "BL_PWM"
 		(at 184.15 99.06 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4243,7 +4223,6 @@
 	)
 	(label "BL_PWM"
 		(at 83.82 105.41 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4254,7 +4233,6 @@
 	)
 	(label "MPU_SCL"
 		(at 198.12 36.83 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4265,7 +4243,6 @@
 	)
 	(label "MPU_SCL"
 		(at 46.99 123.19 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4276,7 +4253,6 @@
 	)
 	(label "PRG_RX"
 		(at 48.26 102.87 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4287,7 +4263,6 @@
 	)
 	(label "PRG_DTR"
 		(at 27.94 33.02 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4298,7 +4273,6 @@
 	)
 	(label "STAT_1"
 		(at 83.82 120.65 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4309,7 +4283,6 @@
 	)
 	(label "BR_PWM"
 		(at 83.82 102.87 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4320,7 +4293,6 @@
 	)
 	(label "PRG_DTR"
 		(at 90.17 91.44 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4331,7 +4303,6 @@
 	)
 	(label "FR_PWM"
 		(at 140.97 142.24 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4342,7 +4313,6 @@
 	)
 	(label "STAT_3"
 		(at 264.16 22.86 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4353,7 +4323,6 @@
 	)
 	(label "FL_PWM"
 		(at 184.15 142.24 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4364,7 +4333,6 @@
 	)
 	(label "FR_PWM"
 		(at 83.82 107.95 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4375,7 +4343,6 @@
 	)
 	(label "BT_TX"
 		(at 83.82 95.25 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4386,7 +4353,6 @@
 	)
 	(label "FL_PWM"
 		(at 241.3 81.28 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4397,7 +4363,6 @@
 	)
 	(label "BT_TX"
 		(at 74.93 29.21 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4408,7 +4373,6 @@
 	)
 	(label "STAT_0"
 		(at 83.82 123.19 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4419,7 +4383,6 @@
 	)
 	(label "FR_PWM"
 		(at 241.3 88.9 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4430,7 +4393,6 @@
 	)
 	(label "FL_PWM"
 		(at 83.82 100.33 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
