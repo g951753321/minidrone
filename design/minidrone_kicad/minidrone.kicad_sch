@@ -1535,6 +1535,108 @@
 				)
 			)
 		)
+		(symbol "Mechanical:MountingHole_Pad"
+			(pin_numbers hide)
+			(pin_names
+				(offset 1.016) hide)
+			(exclude_from_sim yes)
+			(in_bom no)
+			(on_board yes)
+			(property "Reference" "H"
+				(at 0 6.35 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "MountingHole_Pad"
+				(at 0 4.445 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Mounting Hole with connection"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "mounting hole"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "MountingHole*Pad*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "MountingHole_Pad_0_1"
+				(circle
+					(center 0 1.27)
+					(radius 1.27)
+					(stroke
+						(width 1.27)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "MountingHole_Pad_1_1"
+				(pin input line
+					(at 0 -2.54 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "Motor:Motor_DC"
 			(pin_names
 				(offset 0)
@@ -2746,6 +2848,12 @@
 		(uuid "203ff268-2fe3-4f4f-b695-a61689e57565")
 	)
 	(junction
+		(at 261.62 116.84)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "25caae32-87fa-4fc2-a786-cd4c6fec83f2")
+	)
+	(junction
 		(at 157.48 33.02)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2776,6 +2884,12 @@
 		(uuid "48449e17-20fb-4a20-86d4-fa987a001369")
 	)
 	(junction
+		(at 261.62 106.68)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4babe790-470e-4ee0-887b-7f43d662484b")
+	)
+	(junction
 		(at 144.78 29.21)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2804,6 +2918,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "6020df97-5394-458d-80e0-dcc4b152e26e")
+	)
+	(junction
+		(at 261.62 111.76)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "6b8ebc0e-e8d8-4bd6-a12e-0ab891c5bd0b")
 	)
 	(junction
 		(at 162.56 120.65)
@@ -3063,6 +3183,16 @@
 	)
 	(wire
 		(pts
+			(xy 261.62 111.76) (xy 261.62 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0d65ddb2-89c1-45d1-ad5b-a052aa0394a0")
+	)
+	(wire
+		(pts
 			(xy 74.93 29.21) (xy 80.01 29.21)
 		)
 		(stroke
@@ -3213,6 +3343,16 @@
 	)
 	(wire
 		(pts
+			(xy 261.62 101.6) (xy 261.62 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "27f7f523-e6bd-410f-ada4-46f026391056")
+	)
+	(wire
+		(pts
 			(xy 162.56 133.35) (xy 162.56 134.62)
 		)
 		(stroke
@@ -3350,6 +3490,16 @@
 			(type default)
 		)
 		(uuid "4e5ecc26-f66d-4ad4-9a83-7935a4e24c16")
+	)
+	(wire
+		(pts
+			(xy 259.08 111.76) (xy 261.62 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5322cad9-f787-47fd-8d5c-d4bf9ddcd620")
 	)
 	(wire
 		(pts
@@ -3573,6 +3723,16 @@
 	)
 	(wire
 		(pts
+			(xy 261.62 116.84) (xy 259.08 116.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d7ac5a5-07b5-4d2c-96a7-e678688e747d")
+	)
+	(wire
+		(pts
 			(xy 152.4 142.24) (xy 157.48 142.24)
 		)
 		(stroke
@@ -3733,6 +3893,16 @@
 	)
 	(wire
 		(pts
+			(xy 259.08 101.6) (xy 261.62 101.6)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a05bbbce-8023-4330-8f8d-32ecd59df526")
+	)
+	(wire
+		(pts
 			(xy 27.94 30.48) (xy 36.83 30.48)
 		)
 		(stroke
@@ -3830,6 +4000,16 @@
 			(type default)
 		)
 		(uuid "bd758f07-1241-45d8-bd91-0347e17866f6")
+	)
+	(wire
+		(pts
+			(xy 259.08 106.68) (xy 261.62 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c1dc1a3b-16cd-45b9-8a40-78ae615779ac")
 	)
 	(wire
 		(pts
@@ -3950,6 +4130,16 @@
 			(type default)
 		)
 		(uuid "f07f663d-879f-404a-83d3-23870fa5f70a")
+	)
+	(wire
+		(pts
+			(xy 261.62 106.68) (xy 261.62 111.76)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f488da4d-4b97-410b-ae6e-942cceece348")
 	)
 	(wire
 		(pts
@@ -5027,6 +5217,70 @@
 		)
 	)
 	(symbol
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 256.54 101.6 90)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "18503c52-9eff-4485-b867-85896df6d0e2")
+		(property "Reference" "H1"
+			(at 251.206 100.076 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Pad"
+			(at 251.206 102.616 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380_Pad_TopBottom"
+			(at 256.54 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 256.54 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 256.54 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "493d0a6d-f4d7-4b12-b479-66710d8de482")
+		)
+		(instances
+			(project ""
+				(path "/0f76a7c9-4725-4adc-99d0-a76a79219a7a"
+					(reference "H1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 261.62 88.9 0)
 		(unit 1)
@@ -5779,6 +6033,70 @@
 			(project "minidrone"
 				(path "/0f76a7c9-4725-4adc-99d0-a76a79219a7a"
 					(reference "#PWR09")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 256.54 116.84 90)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "3c910c40-19fd-4af5-9f15-486d2f8f0e90")
+		(property "Reference" "H4"
+			(at 251.206 115.316 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Pad"
+			(at 251.206 117.856 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380_Pad_TopBottom"
+			(at 256.54 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 256.54 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 256.54 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1ce06b25-30a5-4039-a857-7e05bf5aae68")
+		)
+		(instances
+			(project "minidrone"
+				(path "/0f76a7c9-4725-4adc-99d0-a76a79219a7a"
+					(reference "H4")
 					(unit 1)
 				)
 			)
@@ -7085,6 +7403,70 @@
 		)
 	)
 	(symbol
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 256.54 106.68 90)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "65220732-8802-40c0-b1d2-126f0dc642c1")
+		(property "Reference" "H2"
+			(at 251.206 105.156 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Pad"
+			(at 251.206 107.696 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380_Pad_TopBottom"
+			(at 256.54 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 256.54 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 256.54 106.68 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6f93e09b-e6a9-4fbb-a41d-5531894591d9")
+		)
+		(instances
+			(project "minidrone"
+				(path "/0f76a7c9-4725-4adc-99d0-a76a79219a7a"
+					(reference "H2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:LED")
 		(at 255.27 36.83 90)
 		(unit 1)
@@ -7285,6 +7667,70 @@
 			(project "minidrone"
 				(path "/0f76a7c9-4725-4adc-99d0-a76a79219a7a"
 					(reference "#PWR025")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Mechanical:MountingHole_Pad")
+		(at 256.54 111.76 90)
+		(unit 1)
+		(exclude_from_sim yes)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "81c3251a-2b80-48bc-8f5b-8410bc5a2332")
+		(property "Reference" "H3"
+			(at 251.206 110.236 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Pad"
+			(at 251.206 112.776 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO7380_Pad_TopBottom"
+			(at 256.54 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 256.54 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Mounting Hole with connection"
+			(at 256.54 111.76 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "70fea0de-84c9-401a-b9b0-1eb3eee73538")
+		)
+		(instances
+			(project "minidrone"
+				(path "/0f76a7c9-4725-4adc-99d0-a76a79219a7a"
+					(reference "H3")
 					(unit 1)
 				)
 			)
@@ -8627,6 +9073,72 @@
 			(project "minidrone"
 				(path "/0f76a7c9-4725-4adc-99d0-a76a79219a7a"
 					(reference "#PWR021")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 261.62 116.84 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "dffd8ff6-5de6-41c4-8bb8-aeab656cc0f0")
+		(property "Reference" "#PWR46"
+			(at 261.62 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 261.62 121.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 261.62 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 261.62 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 261.62 116.84 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7dbfbe6a-9d84-46c0-9c50-b56e414a8b46")
+		)
+		(instances
+			(project "minidrone"
+				(path "/0f76a7c9-4725-4adc-99d0-a76a79219a7a"
+					(reference "#PWR46")
 					(unit 1)
 				)
 			)
