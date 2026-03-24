@@ -80,49 +80,108 @@ will result in an automatic MCU reset rather than an unrecoverable halt.
 
 ## 2. Interface Definition
 
-### 2.1 MicroBlue → Drone (App to Device)
+### 2.1 Abstract Input Interface
 
-All messages follow MicroBlue framing: `[0x01] ID [0x02] VALUE [0x03]`
+The drone consumes input through an abstract interface, decoupled from any
+specific transport (Bluetooth, UART, USB, RC receiver, etc.). The current
+default backend is MicroBlue over HM-13 BLE; see `protocols.md` for
+transport-specific framing details.
 
-#### Mode-Independent Commands
+#### Input Commands (Transport-Agnostic)
 
-| ID   | Value     | Action                    | Valid In       |
-|------|-----------|---------------------------|----------------|
-| `b0` | `"1"`     | Arm motors                | Diag           |
-| `b0` | `"0"`     | Disarm motors             | Running        |
-| `b1` | `"1"`     | Start calibration         | Diag           |
+Any input source must be able to produce the following commands:
 
-#### Running Mode Commands
+| Command            | Parameters                       | Valid In       |
+|--------------------|----------------------------------|----------------|
+| CMD_ARM            | —                                | Diag           |
+| CMD_DISARM         | —                                | Running        |
+| CMD_CALIBRATE      | —                                | Diag           |
+| CMD_JOYSTICK       | axis (0=throttle/yaw, 1=pitch/roll), x (int16), y (int16) | Running |
+| CMD_SET_PID_GAIN   | gain_type (KP/KI/KD), value (uint8, 0-100) | Running |
+| CMD_MOTOR_TEST     | motor_id (0-3)                   | Diag           |
 
-| ID    | Value           | Action                              |
-|-------|-----------------|-------------------------------------|
-| `j0`  | `"X,Y"`         | Throttle (Y) + Yaw (X)             |
-| `j1`  | `"X,Y"`         | Pitch (Y) + Roll (X)               |
-| `sl0` | `"0"`..`"100"`  | Set PID Kp gain                     |
-| `sl1` | `"0"`..`"100"`  | Set PID Ki gain                     |
-| `sl2` | `"0"`..`"100"`  | Set PID Kd gain                     |
+#### Input Command Struct
 
-#### Diag Mode Commands
+```c
+typedef enum {
+    CMD_ARM,
+    CMD_DISARM,
+    CMD_CALIBRATE,
+    CMD_JOYSTICK,
+    CMD_SET_PID_GAIN,
+    CMD_MOTOR_TEST,
+} cmd_type_t;
 
-| ID    | Value   | Action                                |
-|-------|---------|---------------------------------------|
-| `b2`  | `"1"`   | Test motor FR (pulse)                 |
-| `b3`  | `"1"`   | Test motor FL (pulse)                 |
-| `b4`  | `"1"`   | Test motor BR (pulse)                 |
-| `b5`  | `"1"`   | Test motor BL (pulse)                 |
+typedef enum {
+    GAIN_KP,
+    GAIN_KI,
+    GAIN_KD,
+} gain_type_t;
 
-### 2.2 Drone → MicroBlue (Device to App)
+typedef struct {
+    cmd_type_t type;
+    union {
+        struct { uint8_t axis; int16_t x; int16_t y; } joystick;
+        struct { gain_type_t gain; uint8_t value; }     pid_gain;
+        struct { uint8_t motor_id; }                    motor_test;
+    };
+} drone_cmd_t;
+```
 
-Telemetry sent using the same MicroBlue framing.
+#### Input Backend Interface
 
-| ID         | Value Format              | Rate       | Mode          |
-|------------|---------------------------|------------|---------------|
-| `battery`  | `"7.2"`                   | 1 Hz       | All           |
-| `calib`    | `"ok"` / `"fail"`         | Once       | Calibrate     |
-| `imu`      | `"ax,ay,az,gx,gy,gz"`    | 10 Hz      | Diag          |
-| `status`   | `"calibrate"` / `"diag"` / `"running"` | On change | All |
-| `error`    | error description string  | On event   | All           |
-| `lowbatt`  | `"warning"` / `"critical"`| On change  | All           |
+Each input backend (MicroBlue, future RC, etc.) implements a translator that
+converts transport-specific messages into `drone_cmd_t`:
+
+| Function              | Input                    | Output        |
+|-----------------------|--------------------------|---------------|
+| backend_init()        | config (baud, pins, etc) | status        |
+| backend_poll()        | —                        | drone_cmd_t or NONE |
+
+The MicroBlue backend maps widget IDs to commands as defined in `protocols.md`:
+
+| MicroBlue Widget | drone_cmd_t                                      |
+|------------------|--------------------------------------------------|
+| `b0` = `"1"`     | CMD_ARM                                          |
+| `b0` = `"0"`     | CMD_DISARM                                       |
+| `b1` = `"1"`     | CMD_CALIBRATE                                    |
+| `j0` = `"X,Y"`   | CMD_JOYSTICK { axis=0, x=X-512, y=Y-512 }       |
+| `j1` = `"X,Y"`   | CMD_JOYSTICK { axis=1, x=X-512, y=Y-512 }       |
+| `sl0` = `"V"`    | CMD_SET_PID_GAIN { gain=KP, value=V }            |
+| `sl1` = `"V"`    | CMD_SET_PID_GAIN { gain=KI, value=V }            |
+| `sl2` = `"V"`    | CMD_SET_PID_GAIN { gain=KD, value=V }            |
+| `b2` = `"1"`     | CMD_MOTOR_TEST { motor_id=0 (FR) }               |
+| `b3` = `"1"`     | CMD_MOTOR_TEST { motor_id=1 (FL) }               |
+| `b4` = `"1"`     | CMD_MOTOR_TEST { motor_id=2 (BR) }               |
+| `b5` = `"1"`     | CMD_MOTOR_TEST { motor_id=3 (BL) }               |
+
+### 2.2 Abstract Output Interface (Telemetry)
+
+Telemetry is sent through a backend-agnostic output interface. Each backend
+serializes the telemetry struct into its transport format.
+
+| Telemetry            | Parameters                      | Rate       | Mode      |
+|----------------------|---------------------------------|------------|-----------|
+| TELEM_BATTERY        | voltage_mv (uint16)             | 1 Hz       | All       |
+| TELEM_CALIB_RESULT   | ok (bool)                       | Once       | Calibrate |
+| TELEM_IMU            | ax,ay,az,gx,gy,gz (int16)      | 10 Hz      | Diag      |
+| TELEM_MODE           | mode (enum)                     | On change  | All       |
+| TELEM_ERROR          | error_code (enum)               | On event   | All       |
+| TELEM_LOW_BATT       | level (WARNING/CRITICAL)        | On change  | All       |
+
+#### Telemetry Backend Interface
+
+| Function              | Input            | Output  |
+|-----------------------|------------------|---------|
+| telem_send_battery()  | voltage_mv       | —       |
+| telem_send_calib()    | ok               | —       |
+| telem_send_imu()      | imu_data[6]      | —       |
+| telem_send_mode()     | mode             | —       |
+| telem_send_error()    | error_code       | —       |
+| telem_send_lowbatt()  | level            | —       |
+
+The MicroBlue backend serializes these using `[SOH] ID [STX] VALUE [ETX]`
+framing as defined in `protocols.md`.
 
 ### 2.3 Internal Interfaces
 
@@ -162,13 +221,13 @@ Three independent PID instances: pitch, roll, yaw. All share the same gains
 
 PID instances: `pid_pitch`, `pid_roll`, `pid_yaw`.
 
-Slider-to-gain mapping (linear):
+Gain mapping (from CMD_SET_PID_GAIN value, 0-100, linear):
 
-| Slider | Gain | Formula               | Range       |
-|--------|------|-----------------------|-------------|
-| `sl0`  | Kp   | Kp = sl0_value * 0.05 | 0.0 - 5.0   |
-| `sl1`  | Ki   | Ki = sl1_value * 0.02 | 0.0 - 2.0   |
-| `sl2`  | Kd   | Kd = sl2_value * 0.01 | 0.0 - 1.0   |
+| gain_type | Formula               | Range       |
+|-----------|-----------------------|-------------|
+| KP        | Kp = value * 0.05     | 0.0 - 5.0   |
+| KI        | Ki = value * 0.02     | 0.0 - 2.0   |
+| KD        | Kd = value * 0.01     | 0.0 - 1.0   |
 
 #### Motor Mixer
 
@@ -212,15 +271,16 @@ This is a **Pure Core** module: deterministic, no side effects.
 ### 2.4 Command Acceptance Matrix
 
 Commands received in an invalid mode are silently ignored (no error response).
+Commands are evaluated as `drone_cmd_t`, independent of transport.
 
-| Command         | Calibrate | Diag | Running |
-|-----------------|-----------|------|---------|
-| Arm (`b0`=`1`)  | ignore    | accept | ignore (already armed) |
-| Disarm (`b0`=`0`) | ignore  | ignore | accept  |
-| Calibrate (`b1`=`1`) | ignore (in progress) | accept | ignore |
-| Joystick (`j0`, `j1`) | ignore | ignore | accept |
-| PID sliders (`sl0`-`sl2`) | ignore | ignore | accept |
-| Motor test (`b2`-`b5`) | ignore | accept | ignore |
+| Command          | Calibrate | Diag | Running |
+|------------------|-----------|------|---------|
+| CMD_ARM          | ignore    | accept | ignore (already armed) |
+| CMD_DISARM       | ignore    | ignore | accept  |
+| CMD_CALIBRATE    | ignore (in progress) | accept | ignore |
+| CMD_JOYSTICK     | ignore    | ignore | accept  |
+| CMD_SET_PID_GAIN | ignore    | ignore | accept  |
+| CMD_MOTOR_TEST   | ignore    | accept | ignore  |
 
 ---
 

@@ -72,14 +72,16 @@ and an **effectful shell** (tested only).
 |                        Effectful Shell                            |
 |                                                                  |
 |  +------------------+  +---------------+  +------------------+   |
-|  | UART Driver      |  | I2C Driver    |  | GPIO / PWM HAL   |   |
-|  | (HM-13 BT)       |  | (MPU6050)     |  | (Motors, LEDs)   |   |
+|  | Input Backend    |  | I2C Driver    |  | GPIO / PWM HAL   |   |
+|  | (MicroBlue, RC,  |  | (MPU6050)     |  | (Motors, LEDs)   |   |
+|  |  USB, etc.)      |  |               |  |                  |   |
 |  +--------+---------+  +-------+-------+  +--------+---------+   |
 |           |                     |                   |             |
 |           v                     v                   v             |
 |  +--------+---------+  +-------+-------+  +--------+---------+   |
-|  | MicroBlue Parser |  | IMU Reader    |  | Motor Writer     |   |
-|  | (pure: bytes→msg)|  | (effectful)   |  | (effectful)      |   |
+|  | Backend Parser   |  | IMU Reader    |  | Motor Writer     |   |
+|  | (transport →     |  | (effectful)   |  | (effectful)      |   |
+|  |  drone_cmd_t)    |  |               |  |                  |   |
 |  +--------+---------+  +-------+-------+  +--------+---------+   |
 |           |                     |                   ^             |
 +-----------+---------------------+-------------------+-------------+
@@ -89,9 +91,9 @@ and an **effectful shell** (tested only).
 |                        Pure Core                                 |
 |                                                                  |
 |  +------------------+  +---------------+  +------------------+   |
-|  | Message Dispatch |  | PID Controller|  | State Machine    |   |
-|  | (id,val,mode →   |  | (setpoint,    |  | (event,state →   |   |
-|  |  action)         |  |  measured,dt  |  |  next_state,     |   |
+|  | Command Dispatch |  | PID Controller|  | State Machine    |   |
+|  | (drone_cmd_t,    |  | (setpoint,    |  | (event,state →   |   |
+|  |  mode → event)   |  |  measured,dt  |  |  next_state,     |   |
 |  |                  |  |  → output)    |  |  actions[])      |   |
 |  +------------------+  +---------------+  +------------------+   |
 |                                                                  |
@@ -101,8 +103,18 @@ and an **effectful shell** (tested only).
 |  |  setpoints)      |  |  w/ hysteresis)|  |  offsets[])      |   |
 |  +------------------+  +---------------+  +------------------+   |
 |                                                                  |
+|  +------------------+  +------------------+                      |
+|  | Motor Mixer      |  | Gain Mapper      |                      |
+|  | (throttle,PID →  |  | (value 0-100 →   |                      |
+|  |  duty[4])        |  |  float gain)     |                      |
+|  +------------------+  +------------------+                      |
+|                                                                  |
 +------------------------------------------------------------------+
 ```
+
+Note: Protocol-specific parsers (MicroBlue, etc.) sit in the effectful shell.
+They translate transport bytes into `drone_cmd_t` (defined in `command.h`).
+The pure core only sees `drone_cmd_t` — it never touches raw bytes or I/O.
 
 ### 2.1 Pure Core Modules
 
@@ -113,28 +125,29 @@ property-based testing.
 | Module              | Inputs                        | Outputs                      |
 |---------------------|-------------------------------|------------------------------|
 | **State Machine**   | current_state, event          | next_state, action_list      |
-| **Message Dispatch**| msg_id, msg_value, current_mode | action (arm/disarm/set_pid/...) or IGNORE |
+| **Command Dispatch**| drone_cmd_t, current_mode     | drone_event_t or IGNORE      |
 | **PID Controller**  | setpoint, measured, dt, gains | control_output (float)       |
-| **Input Mapper**    | joystick_x, joystick_y (0-1023) | signed setpoint (-512..+511) |
+| **Input Mapper**    | joystick x, y (int16)         | signed setpoint (-512..+511) |
 | **Battery Level**   | voltage_mv, prev_level        | level_enum (with hysteresis) |
 | **Calibration Math**| raw_samples[N][6]             | offsets[6], variance_ok (bool) |
 | **Motor Mixer**     | throttle, pitch, roll, yaw    | duty[4] (uint16, clamped)    |
-| **Gain Mapper**     | slider_value (0-100)          | gain (float, bounded)        |
-| **MicroBlue Parser**| byte_buffer, length           | MicroBlueMessage (id, value) |
+| **Gain Mapper**     | value (uint8, 0-100)          | gain (float, bounded)        |
 
 ### 2.2 Effectful Shell Modules
 
 These modules perform I/O and are tested via integration tests on target hardware.
 
-| Module             | Side Effects                              |
-|--------------------|-------------------------------------------|
-| **UART Driver**    | Read/write bytes to HM-13 via USART       |
-| **I2C Driver**     | Read/write registers on MPU6050            |
-| **PWM HAL**        | Set timer compare registers for motors     |
-| **GPIO HAL**       | Set LED pin states                         |
-| **ADC HAL**        | Read battery voltage analog input          |
-| **Watchdog HAL**   | Refresh hardware watchdog timer            |
-| **Main Loop**      | Orchestrates shell ↔ core data flow        |
+| Module                  | Side Effects                              |
+|-------------------------|-------------------------------------------|
+| **Input Backend**       | Read from transport (UART, SPI, USB, etc); convert to drone_cmd_t |
+| **MicroBlue Backend**   | Input backend: UART → mb_parse → drone_cmd_t |
+| **Telemetry Backend**   | Serialize telemetry structs to transport format |
+| **I2C Driver**          | Read/write registers on MPU6050            |
+| **PWM HAL**             | Set timer compare registers for motors     |
+| **GPIO HAL**            | Set LED pin states                         |
+| **ADC HAL**             | Read battery voltage analog input          |
+| **Watchdog HAL**        | Refresh hardware watchdog timer            |
+| **Main Loop**           | Orchestrates shell ↔ core data flow        |
 
 ### 2.3 Boundary Rules
 
