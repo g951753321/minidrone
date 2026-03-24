@@ -36,7 +36,7 @@ ZTEST(state_machine, test_init_starts_in_calibrate)
 	zassert_false(state.calibration_valid);
 }
 
-/* VP-03: Calibrate → Diag only on success */
+/* VP-03: Calibrate → Diag only on success; sets calibration_valid */
 ZTEST(state_machine, test_calib_ok_transitions_to_diag)
 {
 	sm_state_t state;
@@ -45,6 +45,8 @@ ZTEST(state_machine, test_calib_ok_transitions_to_diag)
 	sm_result_t r = sm_process(&state, EVENT_CALIB_OK, 0);
 
 	zassert_equal(r.next_mode, DRONE_MODE_DIAG);
+	zassert_true(r.calibration_valid,
+		     "CALIB_OK must set calibration_valid");
 }
 
 /* VP-03: Calibrate never transitions directly to Running */
@@ -284,7 +286,20 @@ ZTEST(state_machine, test_all_transitions_produce_valid_state)
 
 ZTEST_SUITE(pid, NULL, NULL, NULL, NULL, NULL);
 
-/* Basic: zero error produces zero output */
+/* Verify error sign convention: measured > setpoint → negative output */
+ZTEST(pid, test_error_sign_convention)
+{
+	pid_state_t pid;
+
+	pid_init(&pid);
+	pid_set_gains(&pid, 1.0f, 0.0f, 0.0f);
+
+	float out = pid_update(&pid, 5.0f, 10.0f, 0.002f);
+
+	zassert_true(out < 0.0f, "measured > setpoint must produce negative output");
+}
+
+/* Zero error produces zero output (multiple setpoints) */
 ZTEST(pid, test_zero_error_zero_output)
 {
 	pid_state_t pid;
@@ -292,9 +307,13 @@ ZTEST(pid, test_zero_error_zero_output)
 	pid_init(&pid);
 	pid_set_gains(&pid, 1.0f, 0.0f, 0.0f);
 
-	float out = pid_update(&pid, 100.0f, 100.0f, 0.002f);
+	zassert_true(fabsf(pid_update(&pid, 100.0f, 100.0f, 0.002f)) < 0.001f);
 
-	zassert_true(fabsf(out) < 0.001f, "Zero error must produce zero output");
+	pid_reset(&pid);
+	zassert_true(fabsf(pid_update(&pid, 0.0f, 0.0f, 0.002f)) < 0.001f);
+
+	pid_reset(&pid);
+	zassert_true(fabsf(pid_update(&pid, -50.0f, -50.0f, 0.002f)) < 0.001f);
 }
 
 /* P-only: output proportional to error */
@@ -340,6 +359,20 @@ ZTEST(pid, test_no_overflow_extreme_inputs)
 	zassert_true(isfinite(out), "Output must be finite for extreme inputs");
 }
 
+/* VP-08: Near-zero dt must not produce Inf/NaN */
+ZTEST(pid, test_near_zero_dt_safe)
+{
+	pid_state_t pid;
+
+	pid_init(&pid);
+	pid_set_gains(&pid, 1.0f, 0.0f, 1.0f);
+
+	pid_update(&pid, 10.0f, 0.0f, 0.002f);
+	float out = pid_update(&pid, 20.0f, 0.0f, 1e-30f);
+
+	zassert_true(isfinite(out), "Near-zero dt must not produce Inf/NaN");
+}
+
 /* Reset clears state */
 ZTEST(pid, test_reset_clears_state)
 {
@@ -374,19 +407,26 @@ ZTEST(mixer, test_output_clamped_max)
 	}
 }
 
-/* VP-22: No negative duty values */
+/* VP-22: Negative mixer results clamp to 0, not wrap to large uint16 */
 ZTEST(mixer, test_output_no_negative)
 {
 	uint16_t duty[4];
 
-	/* Large negative PID outputs should clamp to 0, not wrap */
-	mixer_update(100.0f, -2000.0f, -2000.0f, -2000.0f, duty);
+	/* pitch=-2000 makes most channels go negative */
+	mixer_update(100.0f, -2000.0f, 0.0f, 0.0f, duty);
 
-	for (int i = 0; i < 4; i++) {
-		/* uint16 can't be negative, but verify no wrap-around */
-		zassert_true(duty[i] <= MAX_THROTTLE,
-			     "Motor %d duty %u wrapped around", i, duty[i]);
-	}
+	/* FR = 100 + (-2000) + 0 - 0 = -1900 → 0 */
+	zassert_equal(duty[MOTOR_FR], 0, "FR should clamp to 0, got %u",
+		      duty[MOTOR_FR]);
+	/* FL = 100 + (-2000) - 0 + 0 = -1900 → 0 */
+	zassert_equal(duty[MOTOR_FL], 0, "FL should clamp to 0, got %u",
+		      duty[MOTOR_FL]);
+	/* BR = 100 - (-2000) + 0 + 0 = 2100 (valid) */
+	zassert_equal(duty[MOTOR_BR], 2100, "BR should be 2100, got %u",
+		      duty[MOTOR_BR]);
+	/* BL = 100 - (-2000) - 0 - 0 = 2100 (valid) */
+	zassert_equal(duty[MOTOR_BL], 2100, "BL should be 2100, got %u",
+		      duty[MOTOR_BL]);
 }
 
 /* Zero throttle, zero PID → all motors at 0 */
@@ -492,6 +532,15 @@ ZTEST(input_mapper, test_kd_range)
 	zassert_true(fabsf(kd_max - 1.0f) < 0.001f, "Kd(100) must be 1.0");
 }
 
+/* Joystick out-of-range input clamped */
+ZTEST(input_mapper, test_joystick_out_of_range_clamped)
+{
+	int16_t result = input_map_joystick(65535);
+
+	zassert_equal(result, 511,
+		      "Out-of-range joystick must clamp to max, got %d", result);
+}
+
 /* EC-10: Slider value clamped (input > 100 should still produce valid gain) */
 ZTEST(input_mapper, test_kp_out_of_range_clamped)
 {
@@ -514,7 +563,7 @@ ZTEST(battery, test_adc_to_mv_full_charge)
 	 */
 	uint16_t mv = battery_adc_to_mv(4095);
 
-	zassert_true(mv > 8000 && mv < 8500, "Full ADC should be ~8250mV, got %u", mv);
+	zassert_equal(mv, 8250, "battery_adc_to_mv(4095) must be 8250, got %u", mv);
 }
 
 /* VP-10: ADC conversion never overflows uint16 */
@@ -592,6 +641,19 @@ ZTEST(battery, test_no_oscillation_at_warning_boundary)
 	zassert_equal(level, BATT_NORMAL);
 }
 
+/* Battery cutoff recovery: voltage rises above critical exit → recovers */
+ZTEST(battery, test_cutoff_recovery)
+{
+	battery_level_t level = battery_level(5900, BATT_CRITICAL);
+
+	zassert_equal(level, BATT_CUTOFF);
+
+	/* Voltage recovers above critical exit threshold */
+	level = battery_level(6900, level);
+	zassert_true(level != BATT_CUTOFF,
+		     "Battery level must recover from CUTOFF when voltage rises");
+}
+
 /* ===================================================================
  * MicroBlue Parser Tests (VP-14 through VP-17, EC-01 through EC-05)
  * =================================================================== */
@@ -665,21 +727,18 @@ ZTEST(parser, test_zero_length)
 	zassert_false(msg.valid);
 }
 
-/* VP-17: Oversized ID truncated or rejected */
+/* VP-17: Oversized ID rejected */
 ZTEST(parser, test_oversized_id)
 {
-	/* ID longer than MB_MAX_ID_LEN */
+	/* ID longer than MB_MAX_ID_LEN (10 chars > 8 max) */
 	uint8_t buf[] = {0x01, 'a', 'b', 'c', 'd', 'e', 'f', 'g',
 			 'h',  'i', 'j', 0x02, '1', 0x03};
 	mb_message_t msg = mb_parse(buf, sizeof(buf));
 
-	/* Must either reject or truncate — but never overflow */
-	if (msg.valid) {
-		zassert_true(strlen(msg.id) <= MB_MAX_ID_LEN);
-	}
+	zassert_false(msg.valid, "Oversized ID must be rejected");
 }
 
-/* VP-17: Oversized value truncated or rejected */
+/* VP-17: Oversized value truncated (not overflowed) */
 ZTEST(parser, test_oversized_value)
 {
 	/* Build a message with value > MB_MAX_VALUE_LEN */
@@ -695,9 +754,10 @@ ZTEST(parser, test_oversized_value)
 	buf[48] = 0x03;
 	mb_message_t msg = mb_parse(buf, 49);
 
-	if (msg.valid) {
-		zassert_true(strlen(msg.value) <= MB_MAX_VALUE_LEN);
-	}
+	/* Value is truncated to MB_MAX_VALUE_LEN but still valid */
+	zassert_true(msg.valid);
+	zassert_true(strlen(msg.value) <= MB_MAX_VALUE_LEN,
+		     "Oversized value must be truncated, not overflow");
 }
 
 /* VP-15: Missing STX → invalid */
