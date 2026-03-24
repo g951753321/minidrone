@@ -14,8 +14,8 @@ calib_result_t calib_compute(const int16_t (*samples)[CALIB_AXES],
 		return result;
 	}
 
-	/* Compute mean for each axis */
-	int32_t sum[CALIB_AXES] = {0};
+	/* Compute mean for each axis (int64 to avoid overflow) */
+	int64_t sum[CALIB_AXES] = {0};
 	for (uint16_t i = 0; i < sample_count; i++) {
 		for (int a = 0; a < CALIB_AXES; a++) {
 			sum[a] += samples[i][a];
@@ -28,12 +28,12 @@ calib_result_t calib_compute(const int16_t (*samples)[CALIB_AXES],
 	/* Compute variance for each axis and check threshold */
 	result.ok = true;
 	for (int a = 0; a < CALIB_AXES; a++) {
-		int32_t variance_sum = 0;
+		int64_t variance_sum = 0;
 		for (uint16_t i = 0; i < sample_count; i++) {
 			int32_t diff = samples[i][a] - result.offsets[a];
-			variance_sum += diff * diff;
+			variance_sum += (int64_t)diff * diff;
 		}
-		int32_t variance = variance_sum / sample_count;
+		int64_t variance = variance_sum / sample_count;
 		if (variance > CALIB_VARIANCE_THRESHOLD) {
 			result.ok = false;
 			break;

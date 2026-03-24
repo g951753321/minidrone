@@ -1,10 +1,11 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 
 #include <app/core/mixer.h>
+#include <math.h>
 
 static uint16_t clamp(float val)
 {
-	if (val < 0.0f) {
+	if (!isfinite(val) || val < 0.0f) {
 		return 0;
 	}
 	if (val > (float)MAX_THROTTLE) {

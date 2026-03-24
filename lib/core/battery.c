@@ -44,7 +44,12 @@ battery_level_t battery_level(uint16_t voltage_mv, battery_level_t prev_level)
 		return BATT_CRITICAL;
 
 	case BATT_CUTOFF:
-		/* Already handled above */
+		if (voltage_mv >= BATT_CRITICAL_EXIT_MV) {
+			return BATT_WARNING;
+		}
+		if (voltage_mv >= BATT_CUTOFF_MV) {
+			return BATT_CRITICAL;
+		}
 		return BATT_CUTOFF;
 
 	default:

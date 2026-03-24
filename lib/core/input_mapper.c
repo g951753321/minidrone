@@ -4,6 +4,9 @@
 
 int16_t input_map_joystick(uint16_t raw)
 {
+	if (raw > JOYSTICK_MAX) {
+		raw = JOYSTICK_MAX;
+	}
 	return (int16_t)raw - JOYSTICK_CENTER;
 }
 

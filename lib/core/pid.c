@@ -39,9 +39,9 @@ float pid_update(pid_state_t *pid, float setpoint, float measured, float dt)
 	}
 	float i_out = pid->ki * pid->integral;
 
-	/* Derivative (skip on first call) */
+	/* Derivative (skip on first call or near-zero dt) */
 	float d_out = 0.0f;
-	if (pid->initialized && dt > 0.0f) {
+	if (pid->initialized && dt > 1e-6f) {
 		d_out = pid->kd * (error - pid->prev_error) / dt;
 	}
 

@@ -43,6 +43,8 @@ typedef enum {
 
 typedef struct {
 	drone_mode_t next_mode;
+	bool calibration_valid;
+	uint32_t last_disarm_ms;
 	drone_action_t actions[MAX_ACTIONS];
 	uint8_t action_count;
 } sm_result_t;
@@ -57,6 +59,12 @@ typedef struct {
  * Initialize state machine to default state.
  */
 void sm_init(sm_state_t *state);
+
+/**
+ * Apply sm_result_t back to sm_state_t.
+ * Must be called by the effectful shell after sm_process().
+ */
+void sm_apply(sm_state_t *state, const sm_result_t *result);
 
 /**
  * Process an event and return the next state + actions.

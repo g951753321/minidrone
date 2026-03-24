@@ -46,11 +46,7 @@ mb_message_t mb_parse(const uint8_t *buf, uint16_t len)
 	/* Extract ID (between SOH and STX) */
 	uint16_t id_len = stx_pos - 1;
 	if (id_len == 0 || id_len > MB_MAX_ID_LEN) {
-		if (id_len > MB_MAX_ID_LEN) {
-			id_len = MB_MAX_ID_LEN;
-		} else {
-			return msg;
-		}
+		return msg;
 	}
 	memcpy(msg.id, &buf[1], id_len);
 	msg.id[id_len] = '\0';
