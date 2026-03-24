@@ -48,6 +48,13 @@ mb_message_t mb_parse(const uint8_t *buf, uint16_t len)
 	if (id_len == 0 || id_len > MB_MAX_ID_LEN) {
 		return msg;
 	}
+	/* Validate ID bytes are printable ASCII (0x20-0x7E) */
+	for (uint16_t i = 0; i < id_len; i++) {
+		uint8_t c = buf[1 + i];
+		if (c < 0x20 || c > 0x7E) {
+			return msg;
+		}
+	}
 	memcpy(msg.id, &buf[1], id_len);
 	msg.id[id_len] = '\0';
 
@@ -58,6 +65,13 @@ mb_message_t mb_parse(const uint8_t *buf, uint16_t len)
 	}
 	if (val_len > MB_MAX_VALUE_LEN) {
 		val_len = MB_MAX_VALUE_LEN;
+	}
+	/* Validate VALUE bytes are printable ASCII (0x20-0x7E) or comma */
+	for (uint16_t i = 0; i < val_len; i++) {
+		uint8_t c = buf[stx_pos + 1 + i];
+		if (c < 0x20 || c > 0x7E) {
+			return msg;
+		}
 	}
 	memcpy(msg.value, &buf[stx_pos + 1], val_len);
 	msg.value[val_len] = '\0';
