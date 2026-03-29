@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: Apache-2.0
+
+mainmenu "MiniDrone Flight Controller"
+
+menu "MiniDrone Modules"
+
+config MINIDRONE_BT
+	bool "Bluetooth (HM-13 UART)"
+	default y
+
+config MINIDRONE_IMU
+	bool "IMU (MPU6050)"
+	default y
+
+config MINIDRONE_MOTOR
+	bool "Motor PWM output"
+	default y
+
+config MINIDRONE_BATTERY
+	bool "Battery ADC monitoring"
+	default y
+
+config MINIDRONE_LED
+	bool "Status LEDs"
+	default y
+
+endmenu
+
+menu "MiniDrone Logging"
+
+module = SHELL_BT
+module-str = shell_bt
+source "subsys/logging/Kconfig.template.log_config"
+
+module = MAIN
+module-str = main
+source "subsys/logging/Kconfig.template.log_config"
+
+endmenu
+
+source "Kconfig.zephyr"
