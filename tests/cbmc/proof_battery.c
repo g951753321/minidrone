@@ -19,8 +19,8 @@ void proof_adc_no_overflow(void)
 
 	uint16_t mv = battery_adc_to_mv(adc_raw);
 
-	/* Result must be a reasonable voltage (< 10V = 10000 mV) */
-	assert(mv <= 10000);
+	/* Result must be a reasonable voltage (< 14V = 14000 mV) */
+	assert(mv <= 14000);
 }
 
 /* VP-18: Hysteresis — warning entry/exit thresholds */

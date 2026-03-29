@@ -4,11 +4,11 @@
 
 uint16_t battery_adc_to_mv(uint16_t adc_raw)
 {
-	/* voltage_mv = (adc_raw * 3300 * 5) / (4095 * 2)
-	 * = adc_raw * 16500 / 8190
+	/* voltage_mv = (adc_raw * 3300 * 4) / 4095
+	 * = adc_raw * 13200 / 4095
 	 * Use uint32_t to avoid overflow during multiplication.
 	 */
-	return (uint16_t)(((uint32_t)adc_raw * 16500U) / 8190U);
+	return (uint16_t)(((uint32_t)adc_raw * 13200U) / 4095U);
 }
 
 battery_level_t battery_level(uint16_t voltage_mv, battery_level_t prev_level)

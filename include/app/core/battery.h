@@ -21,8 +21,8 @@ typedef enum {
 
 /**
  * Convert raw ADC value to pack voltage in mV.
- * Voltage divider: R_top=30K, R_bottom=20K, ratio=0.4
- * Formula: voltage_mv = (adc_raw * 3300 * 5) / (4095 * 2)
+ * Voltage divider: R_top=30K, R_bottom=10K, ratio=0.25
+ * Formula: voltage_mv = (adc_raw * 3300 * 4) / 4095
  * Pure function.
  *
  * @param adc_raw  12-bit ADC reading (0-4095)

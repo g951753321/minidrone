@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #define CALIB_AXES 6
-#define CALIB_VARIANCE_THRESHOLD 100
+#define CALIB_VARIANCE_THRESHOLD 10000
 
 typedef struct {
 	int16_t offsets[CALIB_AXES];
