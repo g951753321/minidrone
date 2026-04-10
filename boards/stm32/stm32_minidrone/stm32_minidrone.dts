@@ -1,0 +1,155 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * STM32 MiniDrone Board Device Tree
+ *
+ * Pin mapping (from KiCad schematic):
+ *   PA0-PA3  : STAT_0..STAT_3 (GPIO LEDs)
+ *   PA5      : VBAT_a (ADC1_IN5, battery voltage)
+ *   PA6      : FR_PWM (TIM3_CH1)
+ *   PA7      : BL_PWM (TIM3_CH2)
+ *   PA9/PA10 : USART1 (debug console)
+ *   PB0      : BR_PWM (TIM3_CH3)
+ *   PB1      : FL_PWM (TIM3_CH4)
+ *   PB6/PB7  : I2C1 (MPU6050)
+ *   PB10/PB11: USART3 (HM-13 Bluetooth)
+ *   PC13     : PWR LED
+ */
+
+/dts-v1/;
+#include <st/f1/stm32f103Xb.dtsi>
+#include <st/f1/stm32f103r(8-b)tx-pinctrl.dtsi>
+
+/ {
+	model = "STM32 minidrone Board";
+	compatible = "st,stm32f103cb";
+
+	chosen {
+		zephyr,console = &usart1;
+		zephyr,shell-uart = &usart1;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		pwr_led: pwr_led {
+			gpios = <&gpioc 13 GPIO_ACTIVE_LOW>;
+			label = "PWR";
+		};
+
+		stat0: stat_0 {
+			gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>;
+			label = "STAT_0";
+		};
+
+		stat1: stat_1 {
+			gpios = <&gpioa 1 GPIO_ACTIVE_HIGH>;
+			label = "STAT_1";
+		};
+
+		stat2: stat_2 {
+			gpios = <&gpioa 2 GPIO_ACTIVE_HIGH>;
+			label = "STAT_2";
+		};
+
+		stat3: stat_3 {
+			gpios = <&gpioa 3 GPIO_ACTIVE_HIGH>;
+			label = "STAT_3";
+		};
+	};
+
+	aliases {
+		led0 = &pwr_led;
+		stat0 = &stat0;
+		stat1 = &stat1;
+		stat2 = &stat2;
+		stat3 = &stat3;
+		bt-uart = &usart3;
+	};
+};
+
+&clk_hse {
+	clock-frequency = <DT_FREQ_M(8)>;
+	status = "okay";
+};
+
+&pll {
+	mul = <9>;
+	clocks = <&clk_hse>;
+	status = "okay";
+};
+
+&rcc {
+	clocks = <&pll>;
+	clock-frequency = <DT_FREQ_M(72)>;
+	ahb-prescaler = <1>;
+	apb1-prescaler = <2>;
+	apb2-prescaler = <1>;
+};
+
+/* Debug console */
+&usart1 {
+	pinctrl-0 = <&usart1_tx_pa9 &usart1_rx_pa10>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+	status = "okay";
+};
+
+/* Bluetooth HM-13 */
+&usart3 {
+	pinctrl-0 = <&usart3_tx_pb10 &usart3_rx_pb11>;
+	pinctrl-names = "default";
+	current-speed = <38400>;
+	status = "okay";
+};
+
+/* IMU MPU6050 */
+&i2c1 {
+	pinctrl-0 = <&i2c1_scl_pb6 &i2c1_sda_pb7>;
+	pinctrl-names = "default";
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+
+	mpu6050: mpu6050@68 {
+		compatible = "invensense,mpu6050";
+		reg = <0x68>;
+		status = "okay";
+		int-gpios = <&gpiob 5 GPIO_ACTIVE_HIGH>;
+	};
+};
+
+/* Motor PWM: TIM3 CH1-CH4 on PA6, PA7, PB0, PB1 */
+&timers3 {
+	st,prescaler = <0>;
+	status = "okay";
+
+	motor_pwm: pwm {
+		compatible = "st,stm32-pwm";
+		status = "okay";
+		pinctrl-0 = <&tim3_ch1_pwm_out_pa6
+			     &tim3_ch2_pwm_out_pa7
+			     &tim3_ch3_pwm_out_pb0
+			     &tim3_ch4_pwm_out_pb1>;
+		pinctrl-names = "default";
+		#pwm-cells = <3>;
+	};
+};
+
+/* Battery voltage ADC on PA5 (ADC1_IN5) */
+&adc1 {
+	pinctrl-0 = <&adc1_in5_pa5>;
+	pinctrl-names = "default";
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	channel@5 {
+		reg = <5>;
+		zephyr,gain = "ADC_GAIN_1";
+		zephyr,reference = "ADC_REF_INTERNAL";
+		zephyr,acquisition-time = <ADC_ACQ_TIME_DEFAULT>;
+		zephyr,resolution = <12>;
+	};
+};

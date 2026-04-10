@@ -11,9 +11,9 @@ manifest:
   projects:
     - name: zephyr
       remote: zephyrproject-rtos
-      revision: main
+      revision: v4.1.0
       import:
         name-allowlist:
           - cmsis      # required by the ARM port
-          - hal_stm32  # required by the nucleo_f302r8 board (STM32 based)
+          - hal_stm32  # required by the STM32 based board
           - cmsis-dsp  # required by the PID controller

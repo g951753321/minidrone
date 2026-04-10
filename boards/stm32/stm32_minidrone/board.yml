@@ -1,0 +1,6 @@
+board:
+  name: stm32_minidrone
+  full_name: STM32 MiniDrone Board
+  vendor: others
+  socs:
+    - name: stm32f103xb

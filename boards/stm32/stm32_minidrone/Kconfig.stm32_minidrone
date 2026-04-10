@@ -1,0 +1,6 @@
+# STM32 minidrone Board Configuration
+
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_STM32_MINIDRONE
+	select SOC_STM32F103XB

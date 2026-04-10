@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+
+tests:
+  core.pure:
+    tags: unit pure_core
+    platform_allow: native_sim

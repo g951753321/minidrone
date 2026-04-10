@@ -1,0 +1,15 @@
+identifier: stm32_minidrone
+name: STM32 minidrone Board
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 20
+supported:
+  - i2c
+  - pwm
+  - spi
+  - adc
+  - gpio
