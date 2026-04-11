@@ -88,7 +88,7 @@ Active flight mode with cascaded PID stabilization loop.
 - PID gains adjustable via BLE configuration interface
 - Low battery critical: ramp motors to 0 over 200 ms, transition to Diag
 - Disarm command transitions back to Diag mode
-- ELRS failsafe triggers: ramp motors to 0 over 200 ms, transition to Diag
+- **ELRS failsafe auto-land**: if altitude > 2 m, descend at 0.5 m/s and land; if < 2 m, ramp motors to zero. See [safety.md](safety.md#failsafe-conditions)
 
 ### Mode: Error
 
@@ -222,21 +222,43 @@ For bus protocols and register maps, see [protocols.md](protocols.md).
 
 ## Data Logging (Blackbox)
 
-- 1 MB internal flash (STM32H743 bank 2); optional 16 MB external SPI flash on carrier
-- Logs: IMU raw data, PID outputs, motor duty, battery voltage, ELRS inputs
-- Log rate: configurable 100 Hz - 1 kHz
-- Download via BLE or USB serial
-- Erase via BLE command or USB command
-- Circular buffer: oldest data overwritten when full
+- **MicroSD card** (FAT32, SDMMC1 4-bit SDIO interface on carrier)
+- File format: CSV (human-readable, directly openable in Linux/Excel/Python)
+- Each flight creates a new file: `LOG00001.CSV`, `LOG00002.CSV`, etc.
+- Logs: timestamp, IMU raw, PID outputs, motor RPM, battery/cell voltage, ELRS inputs
+- Log rate: configurable 100 Hz - 1 kHz (~100 KB/s at 1 kHz)
+- **Pop out SD card → plug into any PC → read files directly**
+- Ring buffer in DTCM (32 KB) absorbs SD write latency spikes; PID loop unaffected
+- Erase / format via BLE shell command or USB serial
+- Storage: 8 GB card = ~22 hours at 1 kHz (effectively unlimited)
 
-## OTA Firmware Update
+## OTA Firmware Update (MCUboot)
 
-- BLE DFU via nRF52 bootloader (MCU firmware image transfer)
-- Fallback: USB-C DFU mode via hardware button
+- **MCUboot** secure bootloader with dual-bank swap on H743
+- Slot 0 (Bank 1): active firmware; Slot 1 (Bank 2): staging area
+- OTA image received via BLE DFU → written to Slot 1 → MCUboot validates + swaps
+- **Automatic rollback**: if new firmware crashes before calling `boot_write_img_confirmed()`, watchdog fires and MCUboot reverts to previous image
+- Cryptographic validation: SHA-256 + ECDSA image signature
+- Fallback: USB-C DFU mode via hardware button hold at boot
 - For detailed OTA flow, see [remote_controller.md](remote_controller.md#ota-firmware-update-via-ble)
+
+## BLE Shell (Runtime Command Line)
+
+- **Zephyr shell over BLE NUS** (Nordic UART Service) via nRF52 module
+- Connect from any BLE terminal app (nRF Connect, BLESerial nRF, Wible)
+- Full command-line interface for runtime configuration and diagnostics:
+  - `pid show`, `pid set pitch kp 1.5` — PID tuning
+  - `imu read`, `imu calibrate` — sensor diagnostics
+  - `motor test 0`, `motor rpm` — motor testing
+  - `battery cells` — per-cell voltage readout
+  - `blackbox start`, `blackbox stop`, `blackbox erase` — log control
+  - `config save`, `config load` — persistent configuration
+  - `gps status` — GPS fix info (when GPS module installed)
+- Also accessible via USB CDC serial (same Zephyr shell, wired)
+- Supplements structured BLE GATT telemetry (shell for debug, GATT for app)
 
 ## Expansion
 
 - I2C bus exposed on SWD connector (shared pins) for external sensors
 - 2 spare GPIO pads on PCB edge for future use
-- SPI flash can store user configuration and waypoint data
+- MicroSD stores user configuration and waypoint data alongside logs

@@ -54,6 +54,8 @@ Connected via **2x 30-pin castellated pad headers at 1.27 mm pitch**.
 | TIM3 CH1-4        | 4    | Aux PWM outputs                                 |
 | ADC1 (x4)         | 4    | Battery V, Cell1 V, Cell2 V, spare              |
 | ADC3 (x4)         | 4    | Motor current x4 (via op-amps on carrier)       |
+| SDMMC1             | 7    | CK, CMD, D0-D3, CD (MicroSD on carrier)        |
+| Sensor Load Switch | 1    | GPIO output (TPS22918 enable)                   |
 | EXTI (x6)         | 6    | Interrupt-capable GPIO                          |
 | GPIO (x10)        | 10   | General purpose I/O                             |
 | BLE USART2 TX/RX  | 2    | nRF52 passthrough (from core module)            |
@@ -582,6 +584,19 @@ Battery rail (+VBAT, GND) must use **copper pours on L1 + L4** stitched with
 power vias every 2-3mm. Do not use single traces for battery or ESC input —
 3S at full throttle draws up to 20 A peak (4 × 5 A).
 
+### Carrier Sensor Power Switch
+
+| Parameter         | Value                              |
+|-------------------|------------------------------------|
+| Device            | TPS22918 load switch (SOT-23-5)    |
+| Control           | STM32 GPIO (active high)           |
+| Load              | IMU, Baro, ToF, OF (all 3.3V sensors) |
+| Max Current       | 500 mA (TPS22918 rated 2A)        |
+| Purpose           | H743 boots first, then enables sensor power after 100 ms |
+
+This fixes Gen 1 HW-08 (IMU/BT power sequence) definitively. Sensors
+don't see power spikes during MCU boot or regulator startup.
+
 ### Carrier Board Design Rules
 
 - Core module socket at board center-top
@@ -589,6 +604,7 @@ power vias every 2-3mm. Do not use single traces for battery or ESC input —
 - Minimum 10 mm between module BLE antenna and IMU
 - Battery/ESC power: copper pour on L1 + L4, **not single traces**
 - TPS63070 + LC filter near XT60 connector
+- Sensor power via TPS22918 load switch (GPIO-controlled)
 - Barometer covered with foam; isolated from motor airflow
 - GPS + camera connectors at board edge (JST-GH)
 - Companion computer header at board edge

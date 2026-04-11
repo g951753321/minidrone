@@ -181,6 +181,7 @@ to balance.
 | J4   | JST-XH 1x04            | 2.5 mm  | Battery balance port (3S)  |
 | J7   | JST-GH 1x04            | 1.25 mm | GPS module (removable)     |
 | J8   | JST-GH 1x03 + VBAT pads| 1.25 mm | Camera / VTX (removable)   |
+| J9   | Push-push MicroSD slot  | --      | Blackbox logging (FAT32)   |
 | J5   | PinHeader 1x04 vert    | 2.54 mm | Companion computer UART |
 | J6   | Module socket pads     | 1.27 mm | Core module mounting (2x 30-pin) |
 | M1-4 | Motor pads (solder)    | --      | Brushless motors (3 pads each) |

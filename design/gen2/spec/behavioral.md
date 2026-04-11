@@ -82,33 +82,40 @@ These conditions must hold true at all times regardless of mode.
 ### 1.3 Startup Sequence Contract
 
 ```
-1.  Power on
-2.  Start watchdog timer (IWDG, 100 ms timeout)
-3.  Initialize GPIO (all DSHOT pins LOW)
-4.  Initialize system clock (HSE 25 MHz → PLL1 → 480 MHz); configure D-Cache and I-Cache; configure MPU for DMA regions
+1.  MCUboot validates active image in Slot 0 (signature + CRC)
+    - If invalid: attempt swap with Slot 1 or enter DFU mode
+2.  Application boots; start watchdog timer (IWDG, 100 ms timeout)
+3.  Initialize GPIO (all DSHOT pins LOW; sensor load switch OFF)
+4.  Initialize system clock (HSE 25 MHz → PLL1 → 480 MHz);
+    configure D-Cache and I-Cache; configure MPU for DMA regions
 5.  Initialize USB (CDC + DFU composite device)
-6.  Check SW1 button state:
+6.  Initialize Zephyr shell (USB CDC + BLE NUS backends)
+7.  Check SW1 button state:
     - Held > 3 s → enter DFU mode (no further init)
     - Double-press → enter ELRS bind mode (set flag, continue)
-7.  Initialize USART1 (CRSF @ 420000 baud)
-8.  Initialize USART2 (BLE @ 115200 baud)
-9.  Initialize SPI1 (IMU)
-10. Initialize SPI2 (Flash + Optical Flow)
-11. Initialize I2C1 (Baro + ToF + Charger)
-12. Start battery ADC sampling (DMA, 10 Hz)
-12a. Validate 3S battery voltage:
+8.  Initialize USART1 (CRSF @ 420000 baud)
+9.  Initialize USART2 (BLE NUS @ 115200 baud; shell transport active)
+10. Start battery ADC + cell monitoring (DMA, 10 Hz)
+10a. Validate 3S battery voltage:
      - 9.0-13.1V → 3S valid, continue
      - < 9.0V → no battery or depleted; USB-only power; refuse arm
-13. Verify IMU (WHO_AM_I check, up to 3 retries with 100 ms delay)
+11. **Enable sensor load switch** (TPS22918 GPIO HIGH); wait 100 ms
+12. Initialize SPI1 (IMU); verify WHO_AM_I (up to 3 retries, 100 ms delay)
     - PASS → continue
     - FAIL → enter Error mode
-14. Verify barometer (CHIP_ID check)
+13. Initialize I2C1; verify barometer (BMP390 CHIP_ID)
     - PASS → continue
-    - FAIL → enter Error mode (baro required for safe flight)
+    - FAIL → enter Error mode (baro required for auto-land)
+14. Initialize SDMMC1 (MicroSD); mount FAT32 filesystem
+    - FAIL → log warning; continue without blackbox
 15. Initialize VL53L5CX (firmware upload, ~300 ms)
     - FAIL → log warning; continue without ToF (altitude hold degraded)
 16. Initialize PMW3901 (Product_ID check)
     - FAIL → log warning; continue without OF (position hold disabled)
+16a. Check for GPS module on UART4 (wait 2 s for NMEA sentence)
+    - Detected → enable GPS features (outdoor position hold, RTH)
+    - Not detected → GPS features disabled (no warning, optional module)
+17. Call boot_write_img_confirmed() (MCUboot: mark firmware as valid)
 17. Initialize flash (JEDEC ID check)
     - FAIL → log warning; continue without blackbox
 18. Enter Calibrate mode
@@ -380,8 +387,10 @@ Commands received in an invalid mode are silently ignored.
 | EC-01 | CRSF frame CRC mismatch                    | Frame discarded; use last valid channel data          |
 | EC-02 | CRSF frame too short (< 4 bytes)           | Frame discarded                                       |
 | EC-03 | CRSF sync byte wrong                       | Resync: scan for next 0xC8                           |
-| EC-04 | CRSF link lost during Running              | Failsafe after 500 ms; ramp motors down; → Diag      |
-| EC-05 | CRSF link restored after failsafe          | Remain in Diag; user must re-arm                     |
+| EC-04 | CRSF link lost during Running (alt < 2 m) | Failsafe after 500 ms; ramp motors down; → Diag      |
+| EC-04a| CRSF link lost during Running (alt >= 2 m) | Failsafe after 500 ms; enter AUTO_LAND: descend 0.5 m/s, hold position (OF/GPS), land when ToF < 0.1 m; → Diag |
+| EC-05 | CRSF link restored during AUTO_LAND        | Hold altitude; wait for user stick input; resume manual control |
+| EC-05a| CRSF link restored after landing complete  | Remain in Diag; user must re-arm                     |
 | EC-06 | ELRS packet rate change mid-flight         | Transparent: CRSF parser handles variable rates      |
 | EC-07 | BLE disconnect during Running              | No flight action (BLE not flight-critical)           |
 | EC-08 | BLE and CRSF send conflicting commands     | CRSF has priority for flight commands; BLE for config only |

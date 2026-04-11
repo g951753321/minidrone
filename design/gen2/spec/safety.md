@@ -111,7 +111,8 @@ prevents flight on a battery that may suddenly sag below cutoff under load.
 
 | Condition                      | Detection               | Action                                     |
 |--------------------------------|-------------------------|---------------------------------------------|
-| ELRS link loss                 | No valid CRSF > 500 ms | Ramp motors to 0 over 200 ms; → Diag       |
+| ELRS link loss (alt < 2 m)    | No valid CRSF > 500 ms | Ramp motors to 0 over 200 ms; → Diag       |
+| ELRS link loss (alt >= 2 m)   | No valid CRSF > 500 ms | **AUTO_LAND**: descend 0.5 m/s, position hold (OF/GPS), land; → Diag |
 | IMU failure (no INT1)          | No INT1 pulse > 10 ms  | Ramp motors to 0 over 200 ms; → Diag       |
 | Low battery critical (< 3.3V) | ADC threshold           | Ramp motors to 0 over 200 ms; → Diag       |
 | Low battery cutoff (< 3.0V)   | ADC threshold           | Motors off immediately; remain in Diag      |

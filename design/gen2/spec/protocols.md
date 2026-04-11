@@ -265,7 +265,21 @@ see [safety.md](safety.md#failsafe-conditions).
 | Flow Control    | None                           |
 | Signals         | USART2_TX, USART2_RX          |
 
-### BLE Communication Protocol
+### BLE Transport Modes
+
+The BLE link supports two transport modes over the same NUS (Nordic UART Service):
+
+| Mode       | Purpose                          | Protocol           |
+|------------|----------------------------------|--------------------|
+| **Shell**  | Runtime command line (debug, config) | Zephyr shell (ASCII text, interactive) |
+| **Binary** | Structured telemetry and commands    | Length-delimited binary (below)        |
+
+The nRF52 module runs NUS (UUID 6E400001-B5A3-F393-E0A9-E50E24DCCA9E).
+Any BLE terminal app (nRF Connect, BLESerial nRF, Wible) connects to NUS
+and gets interactive shell access. Structured telemetry uses the binary
+protocol for programmatic access (phone app, GATT characteristics).
+
+### BLE Binary Protocol
 
 Messages between STM32 and nRF52 use a simple length-delimited binary protocol:
 
@@ -460,6 +474,38 @@ Sample rates:
 For cell voltage thresholds, balance detection, and failsafe actions,
 see [safety.md](safety.md).
 
+## SDMMC — MicroSD Card (Blackbox)
+
+| Parameter       | Value                          |
+|-----------------|--------------------------------|
+| Interface       | SDMMC1 (4-bit SDIO)           |
+| Pins            | CK, CMD, D0, D1, D2, D3 + CD (card detect) |
+| Bus Width       | 4-bit                          |
+| Clock           | 25-50 MHz (High Speed mode)    |
+| Throughput      | ~12-25 MB/s                    |
+| Filesystem      | FAT32                          |
+| Connector       | Push-push MicroSD slot on carrier board |
+| DMA             | SDMMC1 IDMA (built-in)        |
+| Zephyr Config   | `CONFIG_DISK_DRIVER_SDMMC=y`, `CONFIG_FAT_FILESYSTEM_ELM=y` |
+
+### Write Buffering
+
+PID loop writes to a 32 KB ring buffer in DTCM (DMA-safe, no cache).
+A background Zephyr thread drains the ring buffer to SD via SDMMC DMA.
+SD garbage collection spikes (~10-100 ms) are absorbed by the ring buffer
+(32 KB holds ~2 s of log data at 15 KB/s). PID loop never blocks on SD.
+
+### File Naming Convention
+
+```
+/LOG00001.CSV    ← flight 1
+/LOG00002.CSV    ← flight 2
+...
+```
+
+New file created on arm, closed on disarm. File header contains firmware
+version, date, battery voltage, and column names. See [features.md](features.md#data-logging-blackbox).
+
 ## WS2812B — RGB LED Protocol
 
 | Parameter       | Value                          |
@@ -470,5 +516,8 @@ see [safety.md](safety.md).
 | Bit 1           | 0.8 us high + 0.45 us low     |
 | Reset           | > 50 us low                    |
 | Bit Order       | GRB, MSB first                 |
-| LEDs            | 1 (single WS2812B)            |
+| LEDs            | 1 (single WS2812B on core module) |
 | Implementation  | SPI MOSI via DMA (one byte per bit) or TIM PWM + DMA |
+
+Note: Arm LEDs (direction identification) are TBD — pending voltage level
+solution for WS2812B on 3.3V system. See quick_note.md.
