@@ -450,7 +450,7 @@ USB-C is still used for:
 | Connector            | USB Type-C 2.0 receptacle (mid-mount or SMD) |
 | ESD Protection       | USBLC6-2SC6 (SOT-23-6)            |
 | CC Resistors         | 2x 5.1K to GND (UFP, device mode) |
-| Functions            | USB DFU, USB CDC serial, battery charging |
+| Functions            | USB DFU, USB CDC serial, standalone power |
 
 ### Power Switch — High-Side P-FET
 

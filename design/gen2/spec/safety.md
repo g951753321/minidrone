@@ -145,7 +145,7 @@ prevents flight on a battery that may suddenly sag below cutoff under load.
 | Interface          | Protection           | Device / Method            |
 |--------------------|---------------------|----------------------------|
 | USB-C (D+/D-)     | TVS diode array     | USBLC6-2SC6 (SOT-23-6)    |
-| USB-C (VBUS)       | TVS + PTC fuse      | Charger IC handles OVP     |
+| USB-C (VBUS)       | TVS + PTC fuse      | No battery charging; USB powers core module only |
 | SWD (SWDIO/SWCLK) | TVS diode array     | PRTR5V0U2X (SOT-363)      |
 | Battery connector  | PTC fuse + P-FET    | No direct ESD path to ICs  |
 | ELRS RX pads       | Internal to module   | Module handles ESD          |
