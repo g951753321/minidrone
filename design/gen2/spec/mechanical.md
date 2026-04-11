@@ -5,7 +5,7 @@
 | Parameter          | Value                        |
 |--------------------|------------------------------|
 | Max Body Size      | 200 mm (W) x 200 mm (L), excluding propellers |
-| Target AUW         | 71 g (2S) / 87 g (3S)              |
+| Target AUW         | 141 g                              |
 | Configuration      | Quadrotor (X-config)         |
 | Use Environment    | Indoor / calm outdoor        |
 
@@ -85,27 +85,20 @@ Trade-off: less thrust but fits more easily within 200 mm body limit.
 
 ## Motor Specifications
 
-For motor electrical specs (KV, current, thrust) and recommended models per
-battery configuration, see [hardware.md](hardware.md#brushless-motors-per-battery-configuration).
+For motor electrical specs (KV, current, thrust), see
+[hardware.md](hardware.md#brushless-motors--1404-4500kv).
 
-Physical dimensions for weight budget:
-
-| Config | Motor Class | Shaft   | Weight/Motor |
-|--------|------------|---------|-------------|
-| 2S     | 1103       | 1 mm    | ~3.5 g      |
-| 3S     | 1204       | 1.5 mm  | ~5 g        |
+| Motor Class | Shaft   | Weight/Motor |
+|------------|---------|-------------|
+| 1404       | 1.5 mm  | ~8.5 g      |
 
 ## Battery
 
-For battery electrical specs (voltage, capacity, connector type, cell count
-auto-detection), see [hardware.md](hardware.md#battery-2s---3s-support).
+For battery electrical specs, see [hardware.md](hardware.md#battery--3s-lipo).
 
-Physical dimensions and weight for budget:
-
-| Config | Capacity | Dimensions (mm)   | Weight |
-|--------|----------|-------------------|--------|
-| 2S     | 450 mAh | ~55 x 20 x 14    | ~30 g  |
-| 3S     | 450 mAh | ~55 x 20 x 20    | ~40 g  |
+| Model              | Capacity | Dimensions (mm) | Weight |
+|--------------------|----------|-----------------|--------|
+| CNHL MiniStar 3S   | 850 mAh | 62 x 25 x 30   | ~80 g  |
 
 ### Battery Mounting
 
@@ -113,12 +106,12 @@ Battery mounts underneath the PCB (center of gravity aligned with thrust center)
 Secured by:
 - Silicone rubber band (lightweight, quick-swap)
 - Or 3D-printed battery tray integrated into frame
-- Battery connector orientation: accessible from rear for easy swap
-- 2S/3S batteries are larger; frame battery bay must accommodate ~55 x 20 x 20 mm
+- XT60 connector accessible from rear for easy swap
+- Battery bay must accommodate 62 x 25 x 30 mm
 
-## Weight Budget (Per Configuration)
+## Weight Budget
 
-### Common Components (All Configs)
+### Common Components
 
 | Component               | Count | Unit Weight (g) | Total (g) |
 |-------------------------|-------|-----------------|-----------|
@@ -129,30 +122,28 @@ Secured by:
 | Wiring / solder / misc  | --    | --              | 2         |
 | **Common subtotal**     |       |                 | **23**    |
 
-### Configuration-Specific Components
+### Drone-Specific Components
 
-| Component               | 2S           | 3S           |
-|-------------------------|-------------|--------------|
-| Motors (x4)             | 1103, 14 g  | 1204, 20 g   |
-| Propellers (x4)         | 3", 4 g     | 3", 4 g      |
-| Battery                 | 450mAh, 30 g| 450mAh, 40 g |
-| **Config subtotal**     | **48 g**    | **64 g**     |
+| Component               | Weight      |
+|-------------------------|-------------|
+| 1404 motors (x4)        | 34 g        |
+| 3" propellers (x4)      | 4 g         |
+| CNHL 3S 850mAh battery  | 80 g        |
+| **Subtotal**            | **118 g**   |
 
 ### Total AUW
 
-| Configuration | Common | Config | **Total AUW** | T/W Ratio |
-|---------------|--------|--------|---------------|-----------|
-| **2S**        | 23 g   | 48 g   | **71 g**      | 3.9 : 1   |
-| **3S**        | 23 g   | 64 g   | **87 g**      | 5.5 : 1   |
+| Common | Drone | **Total AUW** | T/W Ratio | T/W with 100g payload |
+|--------|-------|---------------|-----------|----------------------|
+| 23 g   | 118 g | **141 g**     | 5.7 : 1   | 3.3 : 1              |
 
 ### Weight Optimization Paths
 
-| Change                        | Savings | Applies To |
-|-------------------------------|---------|------------|
-| CF frame (replace TPU)        | ~1-2 g  | All        |
-| PCB unibody (no frame)        | ~6 g    | All        |
-| Discrete ESC on PCB           | ~1.5 g  | All        |
-| Lighter 2S battery (300 mAh) | ~10 g   | 2S         |
+| Change                        | Savings |
+|-------------------------------|---------|
+| CF frame (replace TPU)        | ~1-2 g  |
+| Discrete ESC on carrier PCB   | ~1.5 g  |
+| Lighter battery (450 mAh)    | ~40 g (AUW ~101g, T/W 7.9:1) |
 
 ## Center of Gravity
 
@@ -186,8 +177,10 @@ to balance.
 ### Carrier Board
 | Ref  | Type                    | Pitch   | Purpose              |
 |------|------------------------|---------|----------------------|
-| J3   | XT30 connector         | --      | Battery main power (2S/3S) |
-| J4   | JST-XH 1x04            | 2.5 mm  | Battery balance port (2S/3S) |
+| J3   | XT60 connector         | --      | Battery main power (3S)    |
+| J4   | JST-XH 1x04            | 2.5 mm  | Battery balance port (3S)  |
+| J7   | JST-GH 1x04            | 1.25 mm | GPS module (removable)     |
+| J8   | JST-GH 1x03 + VBAT pads| 1.25 mm | Camera / VTX (removable)   |
 | J5   | PinHeader 1x04 vert    | 2.54 mm | Companion computer UART |
 | J6   | Module socket pads     | 1.27 mm | Core module mounting (2x 30-pin) |
 | M1-4 | Motor pads (solder)    | --      | Brushless motors (3 pads each) |

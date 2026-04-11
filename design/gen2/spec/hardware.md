@@ -275,23 +275,21 @@ LDO → 3.3V for module only.
 
 ## Motor System
 
-### Brushless Motors (Per Battery Configuration)
+### Brushless Motors — 1404 4500KV
 
-The motor KV rating must match the battery voltage. Higher voltage batteries
-use lower KV motors to achieve similar RPM. Select one configuration:
-
-| Config | Motor Class | KV Rating | Max Thrust/Motor | Weight/Motor | Propeller | Notes |
-|--------|------------|-----------|-------------------|-------------|-----------|-------|
-| **2S** | 1103       | 11000 KV  | ~70 g             | ~3.5 g      | 3" (76 mm)| Balanced, indoor/outdoor |
-| **3S** | 1204       | 5000 KV   | ~120 g            | ~5 g        | 3" (76 mm)| Most powerful, outdoor |
-
-| Parameter           | Value (common to all configs) |
-|---------------------|-------------------------------|
-| Shaft               | 1 mm (1103) or 1.5 mm (1204) |
+| Parameter           | Value                      |
+|---------------------|----------------------------|
+| Motor Class         | 1404                        |
+| KV Rating           | 4500 KV                    |
+| Stator              | 14 mm dia x 4 mm height   |
+| Max Thrust (3S, 3") | ~200 g per motor           |
+| Weight              | ~8.5 g per motor           |
+| Shaft               | 1.5 mm                     |
+| Max Current          | 5 A per motor             |
 | Connector           | JST-PH 1.25 mm 3-pin or solder pads |
+| Recommended         | BetaFPV 1404 4500KV, FlyFishRC Flash 1404 4500KV |
 
-For propeller specs and recommended motor models,
-see [mechanical.md](mechanical.md).
+For propeller specs, see [mechanical.md](mechanical.md).
 
 ### 4-in-1 ESC
 
@@ -300,13 +298,13 @@ see [mechanical.md](mechanical.md).
 | Type                | 4-in-1 integrated ESC board |
 | Firmware            | **BlueJay** (required for bidirectional DSHOT300) |
 | Protocol            | Bidirectional DSHOT300      |
-| Continuous Current  | 5 A per channel            |
-| Burst Current       | 8 A per channel            |
+| Continuous Current  | 6 A per channel            |
+| Burst Current       | 10 A per channel           |
 | MOSFET              | Integrated on ESC board    |
-| Supply              | **2S - 3S LiPo (6.0 - 12.6V)** |
+| Supply              | **3S LiPo (9.0 - 12.6V)** |
 | Size                | ~20 x 20 mm mounting       |
 | Weight              | ~2-3 g                     |
-| Voltage Rating      | **>= 13V** (must exceed 3S full charge) |
+| Voltage Rating      | >= 13V                     |
 
 Alternative: discrete motor driver ICs (4x DRV8323 or equivalent, up to 60V)
 integrated on main PCB if a custom ESC is preferred.
@@ -322,22 +320,22 @@ integrated on main PCB if a custom ESC is preferred.
 
 ## Power Supply
 
-### Battery (2S - 3S Support)
+### Battery — 3S LiPo
 
-The PCB and power system support 2S and 3S LiPo batteries. The user selects
-the battery configuration at build time along with matching motors.
-
-| Parameter            | 2S                  | 3S                   |
-|----------------------|---------------------|----------------------|
-| Configuration        | 2S (2 cells series) | 3S (3 cells series)  |
-| Nominal Voltage      | 7.4V                | 11.1V                |
-| Full Charge Voltage  | 8.4V (8.7V HV)     | 12.6V (13.05V HV)   |
-| Cutoff Voltage       | 6.0V (3.0V/cell)    | 9.0V (3.0V/cell)    |
-| Recommended Capacity | 300 - 650 mAh       | 300 - 650 mAh       |
-| Discharge Rate       | >= 75C              | >= 75C               |
-| Main Connector       | XT30                | XT30                 |
-| Balance Connector    | JST-XH 3-pin        | JST-XH 4-pin         |
-| Estimated Weight     | 25 - 42 g           | 35 - 55 g            |
+| Parameter            | Value                              |
+|----------------------|------------------------------------|
+| Model                | CNHL MiniStar 850mAh 3S 70C       |
+| Configuration        | 3S (3 cells series)                |
+| Nominal Voltage      | 11.1V                              |
+| Full Charge Voltage  | 12.6V                              |
+| Cutoff Voltage       | 9.0V (3.0V per cell)              |
+| Capacity             | 850 mAh                           |
+| Discharge Rate       | 70C continuous / 140C burst        |
+| Energy               | 9.44 Wh                           |
+| Main Connector       | XT60                               |
+| Balance Connector    | JST-XH 4-pin                      |
+| Dimensions           | 62 x 25 x 30 mm                   |
+| Weight               | ~80 g (with connector)             |
 
 ### Balance Connector and Cell Monitoring
 
@@ -346,10 +344,9 @@ A JST-XH balance connector exposes individual cell voltages for both
 
 | Parameter        | Value                                       |
 |------------------|---------------------------------------------|
-| Connector        | JST-XH 4-pin (supports 2S and 3S)          |
-| Pinout (3S)      | GND, CELL1+, CELL2+, CELL3+ (= +VBAT)      |
-| Pinout (2S)      | GND, CELL1+, CELL2+ (= +VBAT), N/C         |
-| Position         | Carrier board edge, near XT30 connector     |
+| Connector        | JST-XH 4-pin (3S standard)                 |
+| Pinout           | GND, CELL1+, CELL2+, CELL3+ (= +VBAT)      |
+| Position         | Carrier board edge, near XT60 connector     |
 | Standard         | Industry-standard LiPo balance port         |
 | Use 1            | Plug into external balance charger (primary charging method) |
 | Use 2            | Per-cell ADC monitoring (always active)    |
@@ -375,8 +372,7 @@ cell2_mv  = cell12_mv - cell1_mv
 cell3_mv  = pack_mv - cell12_mv               // 3S only
 ```
 
-For 2S configuration: cell1 and cell2 monitored; cell3 N/C.
-For 3S configuration: cell1, cell2 measured directly; cell3 computed.
+Cell1 and cell2 measured directly via ADC; cell3 computed from pack voltage.
 
 ### Cell Monitoring Features
 
@@ -392,33 +388,30 @@ The MCU uses cell voltages for:
 
 For threshold values, see [safety.md](safety.md#low-battery-thresholds-per-cell-applies-to-1s--2s--3s).
 
-### Cell Count Auto-Detection
+### Battery Voltage Validation
 
-The firmware auto-detects cell count at boot by measuring battery voltage:
+The firmware validates 3S battery voltage at boot:
 
-| Measured Voltage  | Detected Config | Per-Cell Range |
-|-------------------|-----------------|----------------|
-| 6.0V - 8.8V      | 2S              | 3.0 - 4.4V    |
-| 9.0V - 13.1V     | 3S              | 3.0 - 4.37V   |
-| Other            | Error           | Refuse arm     |
+| Measured Voltage  | State           | Action                    |
+|-------------------|-----------------|---------------------------|
+| 9.0V - 13.1V     | 3S OK           | Normal operation          |
+| < 9.0V           | No battery / depleted | USB-only power; refuse arm |
 
-Detection runs once at boot before calibration. All battery thresholds are then
-expressed as per-cell voltages and scaled to pack voltage automatically.
-
-Voltages below 6.0V are treated as either no battery (USB-only power) or
-critically depleted battery — in either case the firmware refuses to arm.
+Validation runs once at boot before calibration. All battery thresholds
+are expressed as per-cell voltages (3.0V cutoff, 3.3V critical, 3.5V warning)
+and applied to the 3-cell pack.
 
 ### Power Domains
 
 | Domain  | Voltage          | Source              | Loads                                |
 |---------|------------------|---------------------|--------------------------------------|
-| +VBAT   | 6.0 - 12.6V     | Battery direct (via XT30)| ESC / Motors                    |
+| +VBAT   | 9.0 - 12.6V     | Battery direct (via XT60)| ESC / Motors, VTX power         |
 | +3V3    | 3.3V             | TPS63070 output     | MCU, IMU, Baro, ToF, OF, BLE, ELRS, Flash, LED, Buzzer |
 | +VUSB   | 5.0V             | USB-C VBUS          | Core module LDO (standalone power), USB peripheral |
 | GND     | 0V               | Common ground       | All                                  |
 
 Note: No onboard battery charging. Use an external balance charger via the
-JST-XH balance connector for both 2S and 3S batteries.
+JST-XH balance connector for 3S batteries.
 
 ### Buck-Boost Regulator — TPS63070
 
@@ -436,8 +429,7 @@ JST-XH balance connector for both 2S and 3S batteries.
 | Output Capacitor     | 22 uF x2 MLCC (X5R/X7R)          |
 | Feedback Divider     | R_TOP: 1M, R_BOT: 470K (3.3V out) |
 
-Note: TPS63070 wide-input buck-boost handles 2S (6.0V min) through 3S (12.6V max)
-with margin. Operates in buck mode for both configurations (input always > 3.3V).
+Note: TPS63070 operates in buck mode for 3S (input 9.0-12.6V, always > 3.3V output).
 
 ### Battery Charging — External Only
 
@@ -576,16 +568,63 @@ multiplication to 480 MHz system clock and 48 MHz USB clock.
 | Mounting Holes    | 4x M2 at 20 x 20 mm pattern (ESC stack) |
 | Module Socket     | 2x 30-pin SMD socket pads, 1.27mm pitch |
 
+### Carrier Board Track Width Classes
+
+| Width        | Typical Use                             |
+|-------------|------------------------------------------|
+| 0.15 mm     | Fine signal (SPI, I2C, GPIO)             |
+| 0.25 mm     | Standard signal                          |
+| 0.50 mm     | 3.3V rail (up to 1 A)                   |
+| 1.50 mm     | Per-motor power trace (up to 5 A)        |
+| **Copper pour** | **Battery main +VBAT / GND (>5 A)**  |
+
+Battery rail (+VBAT, GND) must use **copper pours on L1 + L4** stitched with
+power vias every 2-3mm. Do not use single traces for battery or ESC input —
+3S at full throttle draws up to 20 A peak (4 × 5 A).
+
 ### Carrier Board Design Rules
 
 - Core module socket at board center-top
 - IMU (ICM-42688-P) at board center (near CG)
 - Minimum 10 mm between module BLE antenna and IMU
-- Motor/ESC power routed on L4 (bottom), away from analog on L1
-- TPS63070 + LC filter near battery connector
+- Battery/ESC power: copper pour on L1 + L4, **not single traces**
+- TPS63070 + LC filter near XT60 connector
 - Barometer covered with foam; isolated from motor airflow
+- GPS + camera connectors at board edge (JST-GH)
 - Companion computer header at board edge
 - ToF + Optical Flow on bottom side, facing down
+
+### Carrier GPS Connector (Removable Module)
+
+| Parameter         | Value                              |
+|-------------------|------------------------------------|
+| Connector         | JST-GH 4-pin, 1.25 mm pitch       |
+| Signals           | 3V3, GND, TX (UART4), RX (UART4)  |
+| Baud Rate         | 38400 (default, configurable)      |
+| Protocol          | NMEA / UBX (auto-detect)           |
+| Recommended Module| HGLRC M100 Mini (2.8g, u-blox M10, 15x15mm) |
+| Alternative       | Flywoo GM10 Mini V3 (3.5g, M10 + compass, 20x20mm) |
+| Mounting          | Velcro or 3D-printed pylon on top of frame |
+
+When GPS is not installed, the connector adds <0.3g. The firmware auto-detects
+GPS presence (NMEA sentence received within 2s of boot). If no GPS is detected,
+GPS-dependent features (position hold outdoor, RTH) are disabled gracefully.
+
+### Carrier Camera / VTX Connector (Removable Module)
+
+| Parameter         | Value                              |
+|-------------------|------------------------------------|
+| Power Pads        | +VBAT (direct battery, for VTX), GND |
+| Signal Connector  | JST-GH 3-pin: 3V3, TX (UART3), RX (UART3) |
+| UART Purpose      | VTX control (SmartAudio / MSP DisplayPort) |
+| Recommended       | HDZero Whoop Lite VTX (4.5g) + Nano90 camera (2.5g) = 7g total |
+| Alternative       | Analog AIO (Caddx Ant Lite, ~3g total) |
+| Alternative       | ESP32-CAM (WiFi streaming to phone, ~5g) |
+| Mounting          | VTX on frame top plate; camera on front tilt mount |
+
+The VTX draws power directly from +VBAT (9-12.6V, within HDZero/analog VTX input range).
+The UART provides SmartAudio control (change channel, power) or MSP DisplayPort
+for OSD overlay. When no VTX is installed, the pads add <0.2g.
 
 ### Carrier Companion Computer Header
 

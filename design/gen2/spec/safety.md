@@ -16,7 +16,7 @@ Every Gen 1 hardware issue is explicitly addressed in this design.
 | HW-08 IMU/BT power sequence  | Addressed: separate enable control; IMU powers on after 200 ms delay |
 | HW-09 BOOT0 jumper usability | Replaced: USB-C DFU via software button hold   |
 | HW-10 Cannot power off       | Fixed: high-side P-FET switch with clean cutoff |
-| HW-11 Overweight (74g)       | Fixed: target 71g (2S); 4-layer smaller PCB, no headers |
+| HW-11 Overweight (74g)       | Fixed: 141g AUW with 800g thrust (T/W 5.7:1) |
 | HW-12 BT/IMU interference    | Fixed: IMU at board center, BLE at edge, ground plane shielding |
 | HW-13 LDO inefficient        | Replaced: TPS63070 buck-boost (93% vs 45% efficiency) |
 
@@ -33,17 +33,16 @@ Every Gen 1 hardware issue is explicitly addressed in this design.
 | Short circuit protection     | Present     | PTC fuse + battery BMS          |
 | Charge protection            | N/A         | External balance charger handles CV/CC/termination |
 
-### Low Battery Thresholds (Per-Cell, Applies to 2S / 3S)
+### Low Battery Thresholds (Per-Cell, 3S)
 
-All thresholds are defined per-cell. Firmware auto-detects cell count at boot
-(see hardware.md) and scales thresholds to pack voltage.
+All thresholds are defined per-cell and applied to the 3S pack.
 
-| Level    | Per-Cell V  | Enter At | Exit At | 2S Pack    | 3S Pack    | Action |
-|----------|------------|----------|---------|------------|------------|--------|
-| Normal   | > 3.5V     | --       | --      | > 7.0V     | > 10.5V    | Normal operation |
-| Warning  | 3.3-3.5V   | 3.5V     | 3.6V    | 7.0V/7.2V  | 10.5V/10.8V| LED orange, buzzer/2s, telemetry |
-| Critical | 3.0-3.3V   | 3.3V     | 3.4V    | 6.6V/6.8V  | 9.9V/10.2V | Ramp motors to 0, → Diag, LED red, buzzer rapid |
-| Cutoff   | < 3.0V     | 3.0V     | --      | 6.0V       | 9.0V       | Motors off immediately, remain in Diag |
+| Level    | Per-Cell V  | Enter At | Exit At | 3S Pack    | Action |
+|----------|------------|----------|---------|------------|--------|
+| Normal   | > 3.5V     | --       | --      | > 10.5V    | Normal operation |
+| Warning  | 3.3-3.5V   | 3.5V     | 3.6V    | 10.5V/10.8V| LED orange, buzzer/2s, telemetry |
+| Critical | 3.0-3.3V   | 3.3V     | 3.4V    | 9.9V/10.2V | Ramp motors to 0, → Diag, LED red, buzzer rapid |
+| Cutoff   | < 3.0V     | 3.0V     | --      | 9.0V       | Motors off immediately, remain in Diag |
 
 Note: Hysteresis (100 mV per cell) prevents oscillation near thresholds.
 
@@ -91,8 +90,8 @@ prevents flight on a battery that may suddenly sag below cutoff under load.
 | Source                 | Bidirectional DSHOT300 eRPM (per motor) |
 | Update Rate            | 4 kHz (every rate PID cycle)   |
 | Resolution             | 12-bit eRPM (~0.1% at typical RPMs) |
-| Pole Pairs             | 7 (for 1103/1204 motors with 14 magnets) |
-| RPM Range              | 0 - 60,000 RPM (2S 1103) / 0 - 50,000 (3S 1204) |
+| Pole Pairs             | 7 (for 1404 motors with 14 magnets) |
+| RPM Range              | 0 - 50,000 RPM (3S 1404)            |
 | Stall Detection        | eRPM = 0 with DSHOT throttle > 200 for > 100 ms |
 | Desync Detection       | eRPM deviation > 30% from expected for > 200 ms |
 | Action on Stall        | Disarm all motors, → Diag, report error      |

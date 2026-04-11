@@ -5,10 +5,10 @@
 | Parameter       | Value                        |
 |-----------------|------------------------------|
 | Body Size Limit | 200 mm (W) x 200 mm (L), excluding propellers |
-| Target AUW      | 71 g (2S) / 87 g (3S) — see [mechanical.md](mechanical.md) |
-| Target Flight Time | >= 10 min hover (all configs) |
-| Battery Support  | 2S - 3S LiPo (auto-detect)  |
-| Use Environment | Indoor (2S) / Outdoor (3S)  |
+| Target AUW      | 141 g — see [mechanical.md](mechanical.md) |
+| Target Flight Time | ~26 min hover               |
+| Battery          | 3S LiPo (CNHL MiniStar 850mAh 70C) |
+| Use Environment | Indoor / Outdoor             |
 | Architecture | Core Module (40x25mm) + Carrier Board (50x50mm) |
 
 ## Modular Architecture
@@ -195,13 +195,14 @@ For bus protocols and register maps, see [protocols.md](protocols.md).
 
 ## Power Management
 
-- **2S - 3S LiPo support** with automatic cell count detection at boot
-- **Per-cell voltage monitoring** via JST-XH balance connector
+- **3S LiPo** (CNHL MiniStar 850mAh 70C) with per-cell monitoring via JST-XH
 - **Cell imbalance detection**: refuse arm if max-min cell delta > 100 mV
 - Per-cell threshold scaling (warning, critical, cutoff) — see [safety.md](safety.md)
 - Per-motor RPM monitoring (bidirectional DSHOT) + current backup — see [safety.md](safety.md)
 - Low battery warning (LED + buzzer + telemetry notification)
-- **No onboard charger** — use external LiPo balance charger via JST-XH connector
+- **No onboard charger** — use external balance charger via JST-XH connector
+- **GPS** (removable): JST-GH connector for u-blox M10 module — see [hardware.md](hardware.md)
+- **Camera / VTX** (removable): power pads + UART for HDZero, analog, or ESP32-CAM — see [hardware.md](hardware.md)
 - For power system components, see [hardware.md](hardware.md#power-supply)
 
 ## Programming and Debug

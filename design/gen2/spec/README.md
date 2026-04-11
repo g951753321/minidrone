@@ -5,8 +5,8 @@
 | Parameter         | Value                                          |
 |-------------------|------------------------------------------------|
 | Frame             | Quadrotor X-config, 200 x 200 mm max (excl. props) |
-| Battery           | 2S / 3S LiPo (auto-detect at boot)            |
-| Motors            | Brushless (1103 / 1204, config dependent)     |
+| Battery           | 3S LiPo (CNHL MiniStar 850mAh 70C)           |
+| Motors            | Brushless 1404 4500KV                         |
 | Propellers        | 3 inch                                         |
 | Flight Controller | STM32H743VIH6 (Cortex-M7, 480 MHz, FPU-DP)    |
 | IMU               | ICM-42688-P (SPI, 32 kHz, on-PCB center)      |
@@ -16,20 +16,21 @@
 | Connector         | Castellated pads, 1.27mm pitch, 2x30-pin per edge |
 | FW Framework      | Zephyr RTOS                                    |
 
-## Configuration Matrix
+## Specifications
 
-|                        | 2S (default)    | 3S              |
-|------------------------|-----------------|-----------------|
-| Motor                  | 1103 / 11000 KV | 1204 / 5000 KV  |
-| Battery                | 450 mAh         | 450 mAh         |
-| Pack Voltage           | 6.0 - 8.7V      | 9.0 - 12.6V     |
-| AUW                    | 71 g            | 87 g            |
-| Max Thrust             | 280 g           | 480 g           |
-| Thrust / Weight        | 3.9 : 1         | 5.5 : 1         |
-| Hover Time             | 13.0 min        | 16.2 min        |
-| Mixed Flight Time      | 8.9 min         | 10.9 min        |
-| Charging               | External balance charger | External balance charger |
-| Best For               | Indoor / Outdoor| Outdoor         |
+| Parameter              | Value           |
+|------------------------|-----------------|
+| Motor                  | 1404 / 4500 KV  |
+| Battery                | CNHL 3S 850mAh 70C |
+| Pack Voltage           | 9.0 - 12.6V    |
+| AUW                    | 141 g           |
+| Max Thrust             | 800 g           |
+| Thrust / Weight        | 5.7 : 1         |
+| Max Payload            | ~100 g (T/W 3.3:1) |
+| Hover Time             | ~26 min         |
+| Mixed Flight Time      | ~18 min         |
+| Charging               | External balance charger |
+| Optional Modules       | GPS (2.8g), Camera/VTX (4.5-7g) |
 
 ## Sensor Suite
 
@@ -78,7 +79,7 @@ graph TD
 ```mermaid
 graph LR
     subgraph CARRIER ["Carrier Board"]
-        BAT["Battery<br/>2S-3S LiPo<br/>(XT30)"] --> PTC["PTC Fuse<br/>5A / 10A"]
+        BAT["Battery<br/>3S LiPo<br/>(XT60)"] --> PTC["PTC Fuse<br/>5A / 10A"]
         PTC --> PFET["P-FET Switch<br/>DMP3010LK3<br/>30V"]
         PFET --> LC["LC Filter<br/>4.7uH + 100uF"]
         LC --> VBAT["+VBAT<br/>(ESC / Motors)"]
@@ -222,15 +223,16 @@ graph LR
 ## Key Design Decisions
 
 1. **ELRS + BLE dual-link** — ELRS for low-latency flight; BLE for config/OTA. Independent.
-2. **2S/3S auto-detect** — Single PCB design. Cell count at boot; thresholds scale per-cell.
+2. **3S single config** — CNHL 850mAh 70C. Per-cell monitoring via JST-XH balance port.
 3. **4-layer PCB** — GND plane fixes Gen 1 EMI; smaller board; ~$2-3 extra/board.
 4. **Cascaded PID** — Angle (1 kHz) + rate (4 kHz), far better than Gen 1 single 500 Hz.
 5. **Pure core / shell** — All flight math is deterministic, host-testable, formally verifiable.
 6. **ICM-42688-P** — 10x lower noise than MPU6050, SPI, 32 kHz. MPU6050 is obsolete.
-7. **TPS63070** — Single regulator for 2S-3S at 89-93% efficiency; located on carrier board.
+7. **TPS63070** — Buck regulator for 3S at ~89% efficiency; on carrier board.
 8. **Modular core + carrier** — H743 dev module reusable for drones, robotics, and general embedded dev. Castellated pads for zero-weight production or socketed for development.
 9. **Per-cell monitoring via JST-XH** — Standard balance connector enables per-cell ADC monitoring AND external balance charging. Imbalance detection refuses arm on damaged batteries.
-10. **Bidirectional DSHOT300 + BlueJay** — Per-motor eRPM telemetry at 4 kHz. Enables RPM-based stall detection (primary), dynamic notch filtering, and per-motor health monitoring. Zero extra hardware on the same DSHOT pins.
+10. **Bidirectional DSHOT300 + BlueJay** — Per-motor eRPM telemetry at 4 kHz. RPM-based stall detection, dynamic notch filtering, per-motor health monitoring.
+11. **GPS + Camera removable** — JST-GH connectors for optional u-blox M10 GPS (2.8g) and HDZero/analog VTX (4.5-7g). Zero weight when not installed.
 
 ## Spec Documents
 

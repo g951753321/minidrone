@@ -49,7 +49,7 @@ on whether the logic is deterministic and side-effect-free.
 
 | ID    | Property                                              | Class | Tool   |
 |-------|-------------------------------------------------------|-------|--------|
-| VP-25 | Battery level hysteresis: per-cell warning enter 3.5V, exit 3.6V; critical enter 3.3V, exit 3.4V; correctly scaled for 2S/3S | P | CBMC |
+| VP-25 | Battery level hysteresis: per-cell warning enter 3.5V, exit 3.6V; critical enter 3.3V, exit 3.4V; applied to 3S pack | P | CBMC |
 | VP-26 | Calibration variance check rejects samples with stddev > threshold | P | CBMC |
 | VP-27 | Arm debounce rejects re-arm when elapsed_ms < 1000    | P     | CBMC   |
 | VP-28 | Motor mixer output clamped to [0, 2047] for all inputs| P     | CBMC   |

@@ -96,10 +96,9 @@ These conditions must hold true at all times regardless of mode.
 10. Initialize SPI2 (Flash + Optical Flow)
 11. Initialize I2C1 (Baro + ToF + Charger)
 12. Start battery ADC sampling (DMA, 10 Hz)
-12a. Auto-detect cell count from initial battery voltage:
-     - 6.0-8.8V → 2S; 9.0-13.1V → 3S
-     - Other voltage → error: enter Diag and refuse arm
-     - Store cell_count; scale all battery thresholds accordingly
+12a. Validate 3S battery voltage:
+     - 9.0-13.1V → 3S valid, continue
+     - < 9.0V → no battery or depleted; USB-only power; refuse arm
 13. Verify IMU (WHO_AM_I check, up to 3 retries with 100 ms delay)
     - PASS → continue
     - FAIL → enter Error mode

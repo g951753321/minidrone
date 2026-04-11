@@ -4,13 +4,11 @@
 
 | Parameter              | Target Value         | Notes                          |
 |------------------------|----------------------|--------------------------------|
-| Flight Time (hover)    | >= 10 min            | All configs meet this target   |
-| Flight Time (mixed)    | >= 7 min             | Hover + mild maneuvering       |
-| Max Thrust (2S)        | ~280 g               | 4x 1103 @ 2S, 3" props        |
-| Max Thrust (3S)        | ~480 g               | 4x 1204 @ 3S, 3" props        |
-| Thrust-to-Weight (2S)  | 3.9 : 1              | At 71g AUW — see [mechanical.md](mechanical.md) |
-| Thrust-to-Weight (3S)  | 5.5 : 1              | At 87g AUW                     |
-| Max Payload (beyond AUW)| 10 - 50 g           | Config dependent; maintains 2:1 T/W |
+| Flight Time (hover)    | ~26 min              | CNHL 3S 850mAh, 141g AUW      |
+| Flight Time (mixed)    | ~18 min              | Hover + mild maneuvering       |
+| Max Thrust             | ~800 g               | 4x 1404 @ 3S, 3" props        |
+| Thrust-to-Weight       | 5.7 : 1              | At 141g AUW — see [mechanical.md](mechanical.md) |
+| Max Payload            | ~100 g               | T/W 3.3:1 with payload        |
 | PID Tilt Limit         | 45 deg               | PID output saturates           |
 | Emergency Tilt Cutoff  | 60 deg               | Motors off immediately          |
 | Max Altitude (indoor)  | 4 m                  | Limited by VL53L5CX ToF range  |
@@ -87,97 +85,63 @@ ELRS Stick Input
 
 ### Buck Regulator (TPS63070)
 
-| Parameter                  | 2S               | 3S               |
-|----------------------------|-------------------|-------------------|
-| Input Voltage              | 6.0 - 8.7V       | 9.0 - 12.6V      |
-| Output Voltage             | 3.3V              | 3.3V              |
-| Mode                       | Buck              | Buck              |
-| Load Current (typical)     | ~398 mA           | ~398 mA           |
-| Efficiency                 | ~93%              | ~89%              |
-| Power Dissipation          | ~99 mW            | ~163 mW           |
-| Input Current from Battery | ~192 mA           | ~126 mA           |
+| Parameter                  | Value              |
+|----------------------------|--------------------|
+| Input Voltage              | 9.0 - 12.6V (3S)  |
+| Output Voltage             | 3.3V               |
+| Mode                       | Buck               |
+| Load Current (typical)     | ~398 mA            |
+| Efficiency                 | ~89%               |
+| Power Dissipation          | ~163 mW            |
+| Input Current from Battery | ~126 mA            |
 
-### Motor Subsystem (Direct Battery)
-
-#### 2S Configuration (1103 motors, 11000 KV)
+### Motor Subsystem — 1404 4500KV on 3S
 
 | Condition                   | Current/Motor | Total 4x | Battery Power |
 |-----------------------------|---------------|----------|---------------|
-| Idle (DSHOT 48)             | 40 mA         | 160 mA   | 1.2 W         |
-| Hover (~25% throttle)       | 400 mA        | 1.6 A    | 11.8 W        |
-| Sport (~50% throttle)       | 1.2 A         | 4.8 A    | 35.5 W        |
-| Full throttle (100%)        | 3.0 A         | 12.0 A   | 88.8 W        |
-
-#### 3S Configuration (1204 motors, 5000 KV)
-
-| Condition                   | Current/Motor | Total 4x | Battery Power |
-|-----------------------------|---------------|----------|---------------|
-| Idle (DSHOT 48)             | 30 mA         | 120 mA   | 1.3 W         |
-| Hover (~20% throttle)       | 300 mA        | 1.2 A    | 13.3 W        |
-| Sport (~45% throttle)       | 1.0 A         | 4.0 A    | 44.4 W        |
-| Full throttle (100%)        | 3.5 A         | 14.0 A   | 155.4 W       |
+| Idle (DSHOT 48)             | 40 mA         | 160 mA   | 1.8 W         |
+| Hover (~15% throttle)       | 350 mA        | 1.4 A    | 15.5 W        |
+| Sport (~40% throttle)       | 1.2 A         | 4.8 A    | 53.3 W        |
+| Full throttle (100%)        | 5.0 A         | 20.0 A   | 222 W         |
 
 ### Total System Power (Hover)
 
-| Config | Motor Hover (W) | Digital (W) | Reg Loss (W) | Total (W) |
-|--------|-----------------|-------------|---------------|-----------|
-| **2S** | 11.8            | 1.31        | 0.10          | **13.2**  |
-| **3S** | 13.3            | 1.31        | 0.16          | **14.8**  |
+| Motor Hover (W) | Digital (W) | Reg Loss (W) | **Total (W)** |
+|-----------------|-------------|---------------|---------------|
+| 15.5            | 1.31        | 0.16          | **17.0**      |
 
-Note: 3S hover power is higher due to heavier AUW (heavier battery + motors).
-However, thrust margin is much greater, enabling outdoor flight in wind.
+### Flight Time Estimates
 
-### Flight Time Estimates (All Configurations)
-
-#### 2S: 450 mAh, 7.4V = 3.33 Wh (2.66 Wh usable), AUW ~71 g
+Battery: CNHL 3S 850 mAh, 11.1V = 9.44 Wh (7.55 Wh usable at 80%), AUW ~141 g
 
 | Flight Mode      | Total Power | Flight Time    |
 |------------------|-------------|----------------|
-| Gentle hover     | 12.3 W      | **13.0 min**   |
-| Mixed flying     | 18.0 W      | **8.9 min**    |
-| Aggressive       | 36.0 W      | **4.4 min**    |
+| Gentle hover     | 17.0 W      | **26.6 min**   |
+| Mixed flying     | 25 W        | **18.1 min**   |
+| Aggressive       | 53 W        | **8.5 min**    |
 
-#### 3S: 450 mAh, 11.1V = 5.0 Wh (4.0 Wh usable), AUW ~87 g
+### Summary
 
-| Flight Mode      | Total Power | Flight Time    |
-|------------------|-------------|----------------|
-| Gentle hover     | 14.8 W      | **16.2 min**   |
-| Mixed flying     | 22.0 W      | **10.9 min**   |
-| Aggressive       | 45.0 W      | **5.3 min**    |
+| Parameter             | Value        |
+|-----------------------|--------------|
+| Battery               | CNHL 3S 850mAh 70C |
+| AUW                   | ~141 g       |
+| Max Thrust            | ~800 g       |
+| Thrust-to-Weight      | 5.7 : 1      |
+| Max Payload           | ~100 g (T/W 3.3:1) |
+| Hover Time            | 26.6 min     |
+| Mixed Flight Time     | 18.1 min     |
+| Best For              | Indoor / Outdoor |
 
-### Configuration Comparison Summary
+For detailed weight breakdown, see [mechanical.md](mechanical.md).
 
-| Parameter             | 2S          | 3S           |
-|-----------------------|-------------|--------------|
-| AUW                   | ~71 g       | ~87 g        |
-| Thrust-to-Weight      | 3.9 : 1     | 5.5 : 1      |
-| Hover Time            | 13.0 min    | 16.2 min     |
-| Mixed Time            | 8.9 min     | 10.9 min     |
-| Wind Resistance       | Moderate    | Good         |
-| Best For              | In/Outdoor  | Outdoor      |
-| Charging              | External balance charger | External balance charger |
-| Recommended           | **Default** | Power users  |
+### Alternative Battery Options
 
-For detailed weight breakdown, see [mechanical.md](mechanical.md#weight-budget-per-configuration).
-For battery options and capacities, see [hardware.md](hardware.md#battery-2s---3s-support).
-
-### Battery Options (Per Configuration)
-
-#### 2S Options
-
-| Battery               | Energy   | Weight | Hover Time | Mixed Time |
-|-----------------------|----------|--------|------------|------------|
-| 2S 300 mAh 75C       | 2.22 Wh  | 20 g   | 10.8 min   | 7.4 min    |
-| **2S 450 mAh 75C**   | 2.66 Wh  | 30 g   | 13.0 min   | 8.9 min    |
-| 2S 650 mAh 75C       | 3.85 Wh  | 42 g   | 15.2 min   | 10.2 min   |
-
-#### 3S Options
-
-| Battery               | Energy   | Weight | Hover Time | Mixed Time |
-|-----------------------|----------|--------|------------|------------|
-| 3S 300 mAh 75C       | 3.33 Wh  | 30 g   | 13.5 min   | 8.5 min    |
-| **3S 450 mAh 75C**   | 4.00 Wh  | 40 g   | 17.4 min   | 10.9 min   |
-| 3S 650 mAh 75C       | 5.77 Wh  | 55 g   | 19.0 min   | 11.8 min   |
+| Battery               | Energy   | Weight | AUW    | Hover Time | Mixed Time |
+|-----------------------|----------|--------|--------|------------|------------|
+| CNHL 3S 450mAh 70C   | 5.0 Wh   | 40 g   | ~101 g | 17.6 min   | 12.0 min   |
+| **CNHL 3S 850mAh 70C** | **9.44 Wh** | **80 g** | **~141 g** | **26.6 min** | **18.1 min** |
+| CNHL 3S 1300mAh 70C  | 14.4 Wh  | 120 g  | ~181 g | 33 min     | 22 min     |
 
 ## Regulator Thermal
 

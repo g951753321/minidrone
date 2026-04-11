@@ -366,7 +366,7 @@ eRPM encoding: `eRPM = mantissa << exponent` (exponent in upper 3 bits of the 12
 
 Mechanical RPM: `rpm = (eRPM * 60) / pole_pairs`
 
-For 1103/1204 motors (typically 7 pole pairs / 14 magnets): `rpm = eRPM * 60 / 7`
+For 1404 motors (typically 7 pole pairs / 14 magnets): `rpm = eRPM * 60 / 7`
 
 ### Cycle Timing
 
